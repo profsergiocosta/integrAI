@@ -1,0 +1,56 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{% static '/styles/style.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+
+    <title>Calculadora de Riscos para a Saúde</title>
+    
+
+
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    {% include 'partials/_header.html' %}
+
+
+
+    <div class="container-fluid">
+        
+        
+        <div class="row">
+
+
+            <!-- Menu Lateral -->
+           {% include 'partials/_menu.html' %} 
+           
+
+
+            <!-- Conteúdo Principal -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">       
+
+                
+                {% block content %}{% endblock %}
+
+            </main>
+        </div>
+    </div>
+
+    {% include 'partials/_alertas.html'%}
+
+    {% include 'partials/_footer.html' %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

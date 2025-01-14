@@ -1,0 +1,77 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}  
+
+
+
+
+<!-- Cards de gestantes -->
+
+
+<div class="row">
+
+
+    
+
+    <div class="col-12 mb-4" style="padding: 10px">
+        <form action="{% url 'buscar' %}" method="GET" class="form-inline">  <!-- Usando a classe form-inline do Bootstrap -->
+            <div class="input-group">
+                <input type="text" name="buscar" placeholder="Buscar gestante..." class="form-control" required>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+ 
+
+    {% if cards %}
+    {% for gestante in cards %}
+
+    <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        
+            
+        <div class="card card-hover" onclick="window.location.href='{% url 'gestante' gestante.id %}';"> 
+        
+        {% if gestante.foto == "" or gestante.foto == null %}    
+        <img src="{% static '/assets/imagens/gestantes/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
+        {% else %}     
+        <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante 1">
+        {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">{{gestante.nome}}</h5>
+                <p class="card-text">Idade:{{gestante.idade}}</p>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    <div class="col-md-12">
+
+    <section class="tags" style="padding: 10px">
+        <ul class="tags__lista d-flex flex-row justify-content-start list-unstyled mb-0">
+            
+            <li class="tags__tag mr-2">
+                <a href="{% url 'index' %}" class="btn btn-outline-primary">Todos</a>
+            </li>
+
+         
+
+        </ul>
+    </section>
+
+    </div>
+
+    {% else %}
+    <div class="imagem__texto">
+        <p>gestantes não encontrados</p>
+    </div>
+    {% endif %}
+
+
+</div>
+{% endblock %}

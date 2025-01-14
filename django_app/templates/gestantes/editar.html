@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+
+<section style="margin-left: 5em ; margin-bottom: 3em ; margin-top: 3em">
+ 
+    <form action="{% url 'editar_paciente' gestante_id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form.visible_fields %}
+            <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
+                <label for="{{ field.id_for_label }}"  margin-bottom: 5px;">{{field.label}}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success col-12" style="padding: top 5px;">Salvar</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}

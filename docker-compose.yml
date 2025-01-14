@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  django:
+    build: ./django_app
+    container_name: django_app
+    volumes:
+      - ./django_app:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  chainlit:
+    build: ./chainlit_bot
+    container_name: chainlit_bot
+    ports:
+      - "5005:5005"
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:

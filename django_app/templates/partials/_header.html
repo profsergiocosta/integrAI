@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Calculadora de Riscos para a Gestante</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Links alinhados à esquerda -->
+        <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">Lista Gestantes</a>           
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'novo_gestante' %}"> Nova Gestante</a>
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+        <!-- Links alinhados à direita -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'cadastro' %}">Novo Agente</a>
+            </li>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}  <!-- Verifica se o usuário é membro da equipe (admin) -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/">Administração</a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
