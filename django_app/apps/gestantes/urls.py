@@ -1,8 +1,11 @@
 from django.urls import path
-from apps.gestantes.views import index, gestante, buscar, novo_gestante, deletar_gestante, editar_gestante, avaliacao, detalhes_risco
+from apps.gestantes.views import index, gestante, buscar, novo_gestante, deletar_gestante, editar_gestante, avaliacao, detalhes_risco, chat
 
 urlpatterns = [
         path('', index, name='index'),
+
+        path('chat', chat, name='chat'),
+
         path('gestante/<int:gestante_id>', gestante, name='gestante'),
 
         path('gestante/<int:gestante_id>/cadastrar_questionario/', avaliacao, name='questionario'),

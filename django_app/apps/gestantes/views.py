@@ -139,3 +139,7 @@ def detalhes_risco(request, gestante_id, risco):
     gestante = get_object_or_404(Gestante, id=gestante_id)
     # Lógica para exibir os detalhes do risco
     return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco})
+
+
+def chat(request):
+    return render(request, 'avaliacao/chat.html')

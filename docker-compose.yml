@@ -1,6 +1,23 @@
-version: '3.8'
+version: '3.9'
 
 services:
+  db:  # Nome do serviço para o banco de dados
+    image: postgres:13
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  chainlit:
+    build: ./chainlit_bot
+    container_name: chainlit_bot
+    ports:
+      - "8080:8080"
+      
   django:
     build: ./django_app
     container_name: django_app
@@ -8,34 +25,8 @@ services:
       - ./django_app:/app
     ports:
       - "8000:8000"
-    networks:
-      - app-network
     depends_on:
-      - db
-
-  chainlit:
-    build: ./chainlit_bot
-    container_name: chainlit_bot
-    ports:
-      - "5005:5005"
-    networks:
-      - app-network
-
-  db:
-    image: postgres:13
-    container_name: db
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - db  # Define que o serviço Django depende do serviço 'db'
 
 volumes:
-  db-data:
+  db_data:

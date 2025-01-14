@@ -1,0 +1,8 @@
+.message {
+    background-color: #E3F2FD !important;  /* Light Blue background */
+    color: #1A237E !important;  /* Dark Indigo text */
+}
+
+.MuiToolbar-root {
+    background-color: #b7dcf1 !important;  /* Medium Blue background */
+}

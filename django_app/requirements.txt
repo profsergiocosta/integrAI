@@ -4,3 +4,4 @@ python-dotenv==1.0.1
 sqlparse==0.5.1
 typing_extensions==4.12.2
 pillow==11.0.0
+psycopg2
