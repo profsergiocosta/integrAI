@@ -1,3 +1,4 @@
+
 body {
     padding-top: 56px; /* Para não sobrepor o cabeçalho */
     background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
@@ -15,23 +16,71 @@ footer {
     text-align: center;
 }
 
-.card-img-top {
-    height: 150px;
-    object-fit: contain;
-    border-radius: 8px; /* Cantos arredondados para um visual mais delicado */
-}
 
 .card {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 10px; /* Deixando os cards mais arredondados */
+    border-radius: 12px; /* Deixando os cards mais arredondados */
     background-color: #ffe4e1; /* Fundo levemente rosado para mais delicadeza */
     border: none;
+    padding: 20px;
+    text-align: center; /* Centraliza os elementos dentro do card */
 }
 
 .card-hover:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px; /* Espaço entre os elementos */
+}
+
+/* Ajuste dos botões */
+.card-buttons {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
+    justify-content: center; /* Centraliza os botões */
+    gap: 10px; /* Espaço entre os botões */
+    width: 100%;
+}
+
+.card-buttons .btn {
+    flex: 1; /* Faz com que os botões ocupem o mesmo espaço */
+    min-width: 120px; /* Evita que fiquem muito pequenos */
+    max-width: 180px; /* Define um tamanho máximo */
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px; /* Deixa os botões arredondados */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Estilo dos botões */
+.btn-primary {
+    background-color: #d6336c;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #b72a5b;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #f8d7da;
+    color: #8c1c3d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #f4c2c7;
+    transform: scale(1.05);
 }
 
 /* Estilizando a tela de login */
