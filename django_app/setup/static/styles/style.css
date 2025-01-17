@@ -1,8 +1,13 @@
 body {
-    padding-top: 56px; /* Para não sobrepor o cabeçalho */
+    padding-top: 80px; /* Para não sobrepor o cabeçalho */
     background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
     font-family: 'Poppins', sans-serif; /* Fonte mais arredondada e moderna */
 }
+
+body {
+    padding-bottom: 50px; /* Espaçamento acima do rodapé */
+}
+
 
 nav {
     background-color: #d6336c; /* Tom mais quente e feminino para o cabeçalho */

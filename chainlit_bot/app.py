@@ -1,6 +1,7 @@
 from typing import Optional
 import chainlit as cl
 
+'''
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
     # Fetch the user matching username from your database
@@ -11,7 +12,7 @@ def auth_callback(username: str, password: str):
         )
     else:
         return None
-    
+'''    
 
 @cl.on_chat_start
 async def on_chat_start():
