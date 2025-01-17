@@ -87,7 +87,7 @@ footer {
 /* Ajuste para evitar que os botões fiquem muito colados quando há sidebar */
 .main-content {
     margin-left: 260px; /* Compensa a largura da sidebar */
-    padding: 20px;
+    padding: 10px;
 }
 
 @media (max-width: 992px) {
