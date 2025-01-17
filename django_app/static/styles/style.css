@@ -1,9 +1,10 @@
-
 body {
-    padding-top: 56px; /* Para não sobrepor o cabeçalho */
+    padding-top: 10px; /* Para não sobrepor o cabeçalho */
     background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
     font-family: 'Poppins', sans-serif; /* Fonte mais arredondada e moderna */
 }
+
+
 
 nav {
     background-color: #d6336c; /* Tom mais quente e feminino para o cabeçalho */
@@ -16,11 +17,16 @@ footer {
     text-align: center;
 }
 
+.card-img-top {
+    height: 150px;
+    object-fit: contain;
+    border-radius: 8px; /* Cantos arredondados para um visual mais delicado */
+}
 
 .card {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 12px; /* Deixando os cards mais arredondados */
+    border-radius: 10px; /* Deixando os cards mais arredondados */
     background-color: #ffe4e1; /* Fundo levemente rosado para mais delicadeza */
     border: none;
     padding: 20px;
@@ -32,35 +38,27 @@ footer {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px; /* Espaço entre os elementos */
-}
-
 /* Ajuste dos botões */
-.card-buttons {
+.card-buttons, .tags__lista {
     display: flex;
-    flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
+    flex-wrap: wrap;
     justify-content: center; /* Centraliza os botões */
-    gap: 10px; /* Espaço entre os botões */
+    gap: 16px; /* Maior espaçamento entre botões */
     width: 100%;
+    padding: 10px;
 }
 
-.card-buttons .btn {
-    flex: 1; /* Faz com que os botões ocupem o mesmo espaço */
-    min-width: 120px; /* Evita que fiquem muito pequenos */
-    max-width: 180px; /* Define um tamanho máximo */
-    padding: 10px 16px;
+.card-buttons .btn, .tags__lista .btn {
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px; /* Ajuste para maior equilíbrio */
+    padding: 12px 18px;
     font-size: 16px;
     font-weight: bold;
-    border-radius: 8px; /* Deixa os botões arredondados */
+    border-radius: 8px;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Estilo dos botões */
 .btn-primary {
     background-color: #d6336c;
     color: #ffffff;
@@ -81,6 +79,18 @@ footer {
 .btn-secondary:hover {
     background-color: #f4c2c7;
     transform: scale(1.05);
+}
+
+/* Ajuste para evitar que os botões fiquem muito colados quando há sidebar */
+.main-content {
+    margin-left: 260px; /* Compensa a largura da sidebar */
+    padding: 20px;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0; /* Remove a margem quando a tela for menor */
+    }
 }
 
 /* Estilizando a tela de login */
@@ -165,13 +175,17 @@ select {
     background-color: #ff85a2; /* Rosa suave ao invés de laranja */
 }
 
-
 .sidebar {
     background-color: #ffe4e1; /* Rosa claro suave */
     border-radius: 12px; /* Cantos arredondados */
     padding: 20px;
     height: 100vh; /* Ocupa toda a altura da tela */
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    position: fixed;
+    width: 240px;
+    left: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .sidebar-sticky {
