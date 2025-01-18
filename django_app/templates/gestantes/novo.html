@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
+
 {% block content %}
-
-
-
-<div class="col-sm-12 col-md-6 col-lg-4 mb-4">
-
-<section style="margin-left: 5em ; margin-bottom: 3em ; margin-top: 3em">
- 
-    <form action="{% url 'novo_gestante' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row">
-            {% for field in form.visible_fields %}
-            <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                <label for="{{ field.id_for_label }}"  margin-bottom: 5px;">{{field.label}}</label>
-                {{ field }}
-            </div>
-            {% endfor %}
+<div class="container">
+    <div class="d-flex justify-content-left">
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-4">
+            <section class="form-container">
+                <form action="{% url 'novo_gestante' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        {% for field in form.visible_fields %}
+                        <div class="col-12 mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success col-12">Cadastrar</button>
+                    </div>
+                </form>
+            </section>
         </div>
-        <div>
-            <button type="submit" class="btn btn-success col-12" style="padding: top 5px;">Cadastrar</button>
-        </div>
-    </form>
-</section>
-
+    </div>
 </div>
-
 {% endblock %}
