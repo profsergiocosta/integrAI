@@ -1,106 +1,96 @@
-
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% load static %}
 {% block content %}
 
-
-<div class="col-md-4 mb-4" style="padding: 10px">
-
-    <div class="card">
-
-        {% if gestante.foto == "" or gestante.foto == null %}    
-        <img src="{% static '/assets/imagens/gestante/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
-        {% else %}     
-        <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante 1">
-        {% endif %}
-
-        <div class="card-body">
-            <h5 class="card-title">{{gestante.nome}}</h5>
-            <p class="card-text">Idade:{{gestante.idade}}</p>
+<div class="container">
+    <div class="row">
+        <!-- Card da gestante -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm">
+                {% if gestante.foto == "" or gestante.foto == null %}    
+                <img src="{% static '/assets/imagens/gestante/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
+                {% else %}     
+                <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-2">{{ gestante.nome }}</h5>
+                    <p class="card-text">Idade: <strong>{{ gestante.idade }}</strong></p>
+                </div>
+            </div>
         </div>
 
+        <!-- Card de probabilidades -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Probabilidades da Última Avaliação</h5>
+                    {% if ultima_avaliacao %}
+                        <!-- Barra de progresso para Asma -->
+                        <p>Asma: {{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}%</p>
+                        <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="progress-link">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-info" 
+                                    role="progressbar" 
+                                    style="width: {{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}%;" 
+                                    aria-valuenow="{{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Barra de progresso para Obesidade -->
+                        <p>Obesidade: {{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}%</p>
+                        <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="progress-link">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-info" 
+                                    role="progressbar" 
+                                    style="width: {{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}%;" 
+                                    aria-valuenow="{{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Barra de progresso para Cárie -->
+                        <p>Cárie: {{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}%</p>
+                        <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="progress-link">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-info" 
+                                    role="progressbar" 
+                                    style="width: {{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}%;" 
+                                    aria-valuenow="{{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </a>
+                    {% else %}
+                        <p>Não há avaliação registrada para esta gestante.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-    
-</div>
 
-<div class="col-md-3 mb-4">
-    <div class="d-flex justify-content-between">
-
-        <a href="{% url 'index' %}">
-            <button class="btn btn-success" style="padding-top: 5px;">Voltar</button>
-        </a>
-        
-        <a href="{% url 'editar_gestante' gestante.id %}">
-            <button class="btn btn-success" style="padding-top: 5px;">Atualizar</button>
-        </a>
-
-        <a href="{% url 'questionario' gestante.id %}">
-            <button class="btn btn-danger" style="padding-top: 5px;">Riscos</button>
-        </a>
-
-        <a href="{% url 'deletar_gestante' gestante.id %}">
-            <button class="btn btn-danger" style="padding-top: 5px;">Deletar</button>
-        </a>
-    </div>
-</div>
-
-
-<div class="col-md-4 mb-4">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Probabilidades da Última Avaliação</h5>
-
-            {% if ultima_avaliacao %}
-                <!-- Barra de progresso para Asma -->
-                <p>Asma: {{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}</p>
-                <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="progress-link">
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" 
-                            role="progressbar" 
-                            style="width: {{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}%;" 
-                            aria-valuenow="{{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100">
-                        </div>
-                    </div>
+    <!-- Botões de ação -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4 py-2">
+                    <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-
-                <!-- Barra de progresso para Obesidade -->
-                <p>Obesidade: {{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}</p>
-                <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="progress-link">
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" 
-                            role="progressbar" 
-                            style="width: {{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}%;" 
-                            aria-valuenow="{{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100">
-                        </div>
-                    </div>
+                <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2">
+                    <i class="fas fa-edit"></i> Atualizar
                 </a>
-
-                <!-- Barra de progresso para Cárie -->
-                <p>Cárie: {{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}</p>
-                <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="progress-link">
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" 
-                            role="progressbar" 
-                            style="width: {{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}%;" 
-                            aria-valuenow="{{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100">
-                        </div>
-                    </div>
+                <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                    <i class="fas fa-exclamation-triangle"></i> Riscos
                 </a>
-            {% else %}
-                <p>Não há avaliação registrada para esta gestante.</p>
-            {% endif %}
+                <a href="{% url 'deletar_gestante' gestante.id %}" class="btn btn-outline-danger px-4 py-2">
+                    <i class="fas fa-trash-alt"></i> Deletar
+                </a>
+            </div>
         </div>
     </div>
 </div>
-
-
-
 
 {% endblock %}

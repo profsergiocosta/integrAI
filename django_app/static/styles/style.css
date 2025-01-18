@@ -1,84 +1,160 @@
 body {
-    padding-top: 56px; /* Para não sobrepor o cabeçalho */
-    background-color: #f0f8ff; /* Cor de fundo da página */
-}
-nav {
-    background-color: #8C0333; /* Cor do cabeçalho */
-}
-footer {
-    background-color: #071D41; /* Cor do rodapé */
-    color: #ffffff; /* Cor do texto do rodapé */
-    padding: 10px;
-    text-align: center;
-}
-.card-img-top {
-    height: 150px;  /*Altura padrão para as imagens */
-    object-fit: contain; /* Corta a imagem para caber no card */
-}
-.card {
-    cursor: pointer; /* Muda o cursor para indicar que o card é clicável */
-    transition: transform 0.2s; /* Animação suave */
-}
-.card-hover:hover  {
-    transform: scale(1.05); /* Efeito de aumentar o card ao passar o mouse */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra ao passar o mouse */
+    padding-top: 10px; /* Para não sobrepor o cabeçalho */
+    background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
+    font-family: 'Poppins', sans-serif; /* Fonte mais arredondada e moderna */
 }
 
-/* login */
+
+
+nav {
+    background-color: #d6336c; /* Tom mais quente e feminino para o cabeçalho */
+}
+
+footer {
+    background-color: #8c1c3d; /* Tom harmônico com o cabeçalho */
+    color: #ffffff;
+    padding: 12px;
+    text-align: center;
+}
+
+.card-img-top {
+    height: 150px;
+    object-fit: contain;
+    border-radius: 8px; /* Cantos arredondados para um visual mais delicado */
+}
+
+.card {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px; /* Deixando os cards mais arredondados */
+    background-color: #ffe4e1; /* Fundo levemente rosado para mais delicadeza */
+    border: none;
+    padding: 20px;
+    text-align: center; /* Centraliza os elementos dentro do card */
+}
+
+.card-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ajuste dos botões */
+.card-buttons, .tags__lista {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centraliza os botões */
+    gap: 16px; /* Maior espaçamento entre botões */
+    width: 100%;
+    padding: 10px;
+}
+
+.card-buttons .btn, .tags__lista .btn {
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px; /* Ajuste para maior equilíbrio */
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #d6336c;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #b72a5b;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #f8d7da;
+    color: #8c1c3d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #f4c2c7;
+    transform: scale(1.05);
+}
+
+/* Ajuste para evitar que os botões fiquem muito colados quando há sidebar */
+.main-content {
+    margin-left: 260px; /* Compensa a largura da sidebar */
+    padding: 20px;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0; /* Remove a margem quando a tela for menor */
+    }
+}
+
+/* Estilizando a tela de login */
 .login-container {
-    min-height: 100vh; /* Ocupa toda a altura da tela */
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f8ff; /* Cor de fundo suave */
+    background-color: #fff5f8; /* Rosa bem claro */
 }
+
 .form-login {
     max-width: 400px;
     width: 100%;
     padding: 2rem;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 .btn-login {
-    background-color: #710228;
+    background-color: #d6336c;
     color: #ffffff;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
+.btn-login:hover {
+    background-color: #b72a5b;
+}
 
+/* Formulários */
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre o checkbox e o texto */
-  }
-
-
-  .select-container {
-    display: flex;
-    flex-direction: column; /* Organiza label e select em coluna */
-    margin-bottom: 16px; /* Espaço entre os campos */
-  }
-
-  label {
-    font-weight: bold; /* Destaque para a label */
-    margin-bottom: 4px; /* Espaço entre a label e o select */
-  }
-
-  select {
-    width: 100%; /* Faz o select ocupar toda a largura disponível */
-    padding: 8px; /* Adiciona espaçamento interno */
-    font-size: 16px; /* Ajusta o tamanho da fonte */
-    box-sizing: border-box; /* Inclui padding e borda no cálculo da largura */
-  }
-
-  .question-number {
-    font-weight: bold;
-    margin-right: 5px;
+    gap: 8px;
 }
 
+.select-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
 
+label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #8c1c3d;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #d6336c;
+    background-color: #fff0f5;
+}
+
+/* Barras de progresso */
 .progress-link {
-    text-decoration: none; /* Remove underline */
+    text-decoration: none;
 }
 
 .progress {
@@ -87,8 +163,8 @@ footer {
 }
 
 .progress:hover {
-    transform: scale(1.05); /* Leve aumento de tamanho */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adiciona sombra */
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .progress-bar {
@@ -96,5 +172,45 @@ footer {
 }
 
 .progress-link:hover .progress-bar {
-    background-color: #ff6600; /* Destaca com cor laranja */
+    background-color: #ff85a2; /* Rosa suave ao invés de laranja */
+}
+
+.sidebar {
+    background-color: #ffe4e1; /* Rosa claro suave */
+    border-radius: 12px; /* Cantos arredondados */
+    padding: 20px;
+    height: 100vh; /* Ocupa toda a altura da tela */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    position: fixed;
+    width: 240px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 20px; /* Mantém fixo ao rolar */
+}
+
+.nav.flex-column {
+    padding: 0;
+}
+
+.nav-item {
+    margin-bottom: 10px; /* Espaço entre os itens */
+}
+
+.nav-link {
+    color: #8c1c3d; /* Cor harmoniosa com o design */
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: #f8d7da; /* Rosa mais claro ao passar o mouse */
+    transform: scale(1.05); /* Leve aumento */
+    text-decoration: none;
 }

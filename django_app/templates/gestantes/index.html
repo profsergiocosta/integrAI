@@ -36,7 +36,7 @@
         <div class="card card-hover" onclick="window.location.href='{% url 'gestante' gestante.id %}';"> 
         
         {% if gestante.foto == "" or gestante.foto == null %}    
-        <img src="{% static '/assets/imagens/gestantes/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
+        <img src="{% static '/assets/imagens/gestante/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
         {% else %}     
         <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante 1">
         {% endif %}

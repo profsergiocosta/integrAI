@@ -7,7 +7,7 @@
 
 <section style="margin-left: 5em ; margin-bottom: 3em ; margin-top: 3em">
  
-    <form action="{% url 'editar_paciente' gestante_id %}" method="POST" enctype="multipart/form-data">
+    <form action="{% url 'editar_gestante' gestante_id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             {% for field in form.visible_fields %}
