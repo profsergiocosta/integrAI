@@ -9,7 +9,7 @@
         <div class="col-lg-6 col-md-12 mb-4">
             <div class="card shadow-sm">
                 {% if gestante.foto == "" or gestante.foto == null %}    
-                <img src="{% static '/assets/imagens/gestante/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
+                <img src="{% static '/assets/imagens/gestante/silhueta.png' %}" class="card-img-top" alt="Foto da gestante">
                 {% else %}     
                 <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante">
                 {% endif %}
@@ -26,7 +26,6 @@
                 <div class="card-body">
                     <h5 class="card-title">Probabilidades da Última Avaliação</h5>
                     {% if ultima_avaliacao %}
-                        <!-- Barra de progresso para Asma -->
                         <p>Asma: {{ ultima_avaliacao.probabilidade_asma|floatformat:0 }}%</p>
                         <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="progress-link">
                             <div class="progress" style="height: 20px;">
@@ -39,7 +38,6 @@
                             </div>
                         </a>
 
-                        <!-- Barra de progresso para Obesidade -->
                         <p>Obesidade: {{ ultima_avaliacao.probabilidade_obesidade|floatformat:0 }}%</p>
                         <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="progress-link">
                             <div class="progress" style="height: 20px;">
@@ -52,7 +50,6 @@
                             </div>
                         </a>
 
-                        <!-- Barra de progresso para Cárie -->
                         <p>Cárie: {{ ultima_avaliacao.probabilidade_carie|floatformat:0 }}%</p>
                         <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="progress-link">
                             <div class="progress" style="height: 20px;">
@@ -85,12 +82,35 @@
                 <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
                     <i class="fas fa-exclamation-triangle"></i> Riscos
                 </a>
-                <a href="{% url 'deletar_gestante' gestante.id %}" class="btn btn-outline-danger px-4 py-2">
-                    <i class="fas fa-trash-alt"></i> Deletar
-                </a>
+                <!-- Botão para abrir o modal -->
+                <button type="button" class="btn btn-outline-danger px-4 py-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza de que deseja excluir <strong>{{ gestante.nome }}</strong>? Esta ação não pode ser desfeita.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="{% url 'deletar_gestante' gestante.id %}" class="btn btn-danger">Excluir</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JavaScript (Se ainda não estiver carregado no base.html) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
