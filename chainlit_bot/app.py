@@ -1,7 +1,6 @@
 from typing import Optional
 import chainlit as cl
 
-
 '''
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
@@ -13,11 +12,7 @@ def auth_callback(username: str, password: str):
         )
     else:
         return None
-'''    
-
-settings = cl.ChatSettings(
-    input_placeholder="Digite sua mensagem personalizada..."  # Define o placeholder correto
-)
+''' 
 
 @cl.on_chat_start
 async def on_chat_start():
@@ -27,10 +22,10 @@ async def on_chat_start():
 
 
 @cl.step(type="tool")
-async def llmodonto():
+async def marIA():
     # Fake tool
     await cl.sleep(2)
-    return "Respondendo depois de pensar bastante :)"
+    return "Respondendo .... "
 
 
 @cl.on_message  # this function will be called every time a user inputs a message in the UI
@@ -39,6 +34,6 @@ async def main(message: cl.Message):
 
 
     # Call the tool
-    tool_res = await llmodonto()
+    tool_res = await marIA()
 
     await cl.Message(content=tool_res).send()

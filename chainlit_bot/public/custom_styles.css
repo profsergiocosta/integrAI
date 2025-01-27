@@ -6,5 +6,3 @@
 .MuiToolbar-root {
     background-color: #b7dcf1 !important;  /* Medium Blue background */
 }
-
-document.querySelector("input[type='text']").setAttribute("placeholder", "Digite sua mensagem personalizada...");

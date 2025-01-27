@@ -64,7 +64,7 @@ class Gestante(models.Model):
     
     ocupacao_chefe_familia = models.CharField(max_length=2, choices=OCUPACAO_CHEFE_CHOICES, verbose_name="Qual é a ocupação do chefe da família?", blank=True)
     nivel_escolaridade = models.CharField(max_length=2, choices=ESCOLARIDADE_CHOICES, verbose_name="Qual é o nível de escolaridade mais alto que você completou?", blank=True)
-    renda_familiar = models.CharField(max_length=2, choices=ESCOLARIDADE_CHOICES, verbose_name="Como você classificaria sua renda familiar?", blank=True)
+    renda_familiar = models.CharField(max_length=2, choices=RENDA_FAMILIAR, verbose_name="Como você classificaria sua renda familiar?", blank=True)
 
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
