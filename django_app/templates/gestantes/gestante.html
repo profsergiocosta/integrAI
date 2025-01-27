@@ -5,68 +5,106 @@
 
 <div class="container">
     <div class="row">
-        <!-- Card da gestante -->
-        <div class="col-lg-6 col-md-12 mb-4">
+        <!-- Card da Gestante -->
+   
+           <!-- Card da Gestante -->
+           <div class="col-lg-6 col-md-12 mb-4">
             <div class="card shadow-sm">
-                {% if gestante.foto == "" or gestante.foto == null %}    
-                <img src="{% static '/assets/imagens/gestante/silhueta.png' %}" class="card-img-top" alt="Foto da gestante">
-                {% else %}     
-                <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante">
+                {% if gestante.foto == "" or gestante.foto == null %}
+                    <img src="{% static '/assets/imagens/gestante/silhueta.png' %}" class="card-img-top" alt="Foto da gestante">
+                {% else %}
+                    <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante">
                 {% endif %}
                 <div class="card-body text-center">
                     <h5 class="card-title mb-2">{{ gestante.nome }}</h5>
                     <p class="card-text">Idade: <strong>{{ gestante.idade }}</strong></p>
+
+                    <!-- Informações adicionais -->
+                    <p class="card-text">
+                        <strong>Altura:</strong> {{ gestante.altura }} cm
+                    </p>
+
+                    <!-- Peso (Peso atual, se houver avaliação) -->
+                    {% if ultima_avaliacao %}
+                        <p class="card-text">
+                            <strong>Peso Atual:</strong> {{ ultima_avaliacao.peso_atual }} kg
+                        </p>
+                    {% else %}
+                        <p class="card-text">
+                            <strong>Peso:</strong> {{ gestante.peso }} kg
+                        </p>
+                    {% endif %}
+
+                   
+
+                    <!-- Idade Gestacional (se houver avaliação) -->
+                    {% if ultima_avaliacao %}
+                        <p class="card-text">
+                            <strong>Idade Gestacional:</strong> {{ ultima_avaliacao.idade_gestacional }} semanas
+                        </p>
+                    {% endif %}
+
+                    <!-- Botões de Ação (Alterar e Excluir) -->
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2">
+                            <i class="fas fa-edit"></i> Atualizar
+                        </a>
+                        <!-- Botão para abrir o modal -->
+                        <button type="button" class="btn btn-outline-danger px-4 py-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-<!-- Card de Recomendações -->
-<div class="col-lg-6 col-md-12 mb-4">
-    <div class="card shadow-sm">
-        <div class="card-body text-center">
-            <h5 class="card-title">Recomendações gerais por desfecho</h5>
-            {% if ultima_avaliacao %}
-                <p class="text-muted">Clique em um dos itens abaixo para visualizar as recomendações.</p>
 
-                <div class="d-flex flex-column gap-3">
-                    <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="btn btn-outline-info py-3">
-                        <i class="fas fa-lungs"></i>Asma
-                    </a>
+        <!-- Card de Recomendações -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Recomendações gerais por desfecho</h5>
+                    {% if ultima_avaliacao %}
+                        <p class="text-muted">Clique em um dos itens abaixo para visualizar as recomendações.</p>
+                    {% else %}
+                        <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
+                    {% endif %}
 
-                    <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="btn btn-outline-warning py-3">
-                        <i class="fas fa-weight"></i>Obesidade
-                    </a>
+                    <!-- Botões de Riscos -->
+                    <div class="d-flex flex-column gap-3">
+                        <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="btn btn-outline-info py-3">
+                            <i class="fas fa-lungs"></i> Asma
+                        </a>
 
-                    <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="btn btn-outline-success py-3">
-                        <i class="fas fa-tooth"></i>Cárie
+                        <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="btn btn-outline-warning py-3">
+                            <i class="fas fa-weight"></i> Obesidade
+                        </a>
+
+                        <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="btn btn-outline-success py-3">
+                            <i class="fas fa-tooth"></i> Cárie
+                        </a>
+                    </div>
+
+                    <!-- Espaço para separação visual -->
+                    <hr class="my-4">
+
+                    <!-- Botão de Avaliação (Sempre visível) -->
+                    <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
+                    <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                        <i class="fas fa-exclamation-triangle"></i> Avaliação
                     </a>
                 </div>
-            {% else %}
-                <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
-            {% endif %}
+            </div>
         </div>
     </div>
-</div>
 
-
-
-    <!-- Botões de ação -->
+    <!-- Botão de Voltar - Centralizado -->
     <div class="row">
         <div class="col-md-12">
-            <div class="d-flex flex-wrap justify-content-center gap-3">
+            <div class="d-flex justify-content-center gap-3">
                 <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4 py-2">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-                <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2">
-                    <i class="fas fa-edit"></i> Atualizar
-                </a>
-                <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
-                    <i class="fas fa-exclamation-triangle"></i> Avaliação
-                </a>
-                <!-- Botão para abrir o modal -->
-                <button type="button" class="btn btn-outline-danger px-4 py-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                    <i class="fas fa-trash-alt"></i> Excluir
-                </button>
             </div>
         </div>
     </div>
