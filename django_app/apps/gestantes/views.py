@@ -62,19 +62,22 @@ def nova_gestante(request):
         messages.error(request, 'Usuário não logado')
         return redirect('login')
 
+    print ("nova_gestante")
     form = GestanteForms
     
     if request.method == 'POST':
         form = GestanteForms(request.POST, request.FILES)
+        print ("post")
         if form.is_valid():
-            
+            print ("valido")
             gestante = form.save(commit=False)
             gestante.usuario = request.user    # Define o usuário autenticado
             gestante.save()
             messages.success(request, 'Novo gestante cadastrado!')
             return redirect('index')
-    
-    return render(request, 'gestantes/novo.html', {'form': form})
+        else:
+             print ("nao valido")
+    return render(request, 'gestantes/nova.html', {'form': form})
 
 
 def editar_gestante(request, gestante_id):
