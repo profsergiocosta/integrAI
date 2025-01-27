@@ -1,21 +1,11 @@
-
 {% extends 'base.html' %}
 {% load static %}
-{% block content %}  
+{% block content %}
 
-
-
-
-<!-- Cards de gestantes -->
-
-
+<!-- Filtro de busca -->
 <div class="row">
-
-
-    
-
     <div class="col-12 mb-4" style="padding: 10px">
-        <form action="{% url 'buscar' %}" method="GET" class="form-inline">  <!-- Usando a classe form-inline do Bootstrap -->
+        <form action="{% url 'buscar' %}" method="GET" class="form-inline">
             <div class="input-group">
                 <input type="text" name="buscar" placeholder="Buscar gestante..." class="form-control" required>
                 <div class="input-group-append">
@@ -24,54 +14,38 @@
             </div>
         </form>
     </div>
-
- 
-
-    {% if cards %}
-    {% for gestante in cards %}
-
-    <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
-        
-            
-        <div class="card card-hover" onclick="window.location.href='{% url 'gestante' gestante.id %}';"> 
-        
-        {% if gestante.foto == "" or gestante.foto == null %}    
-        <img src="{% static '/assets/imagens/gestante/silhueta.png'%}" class="card-img-top" alt="Foto do gestante">
-        {% else %}     
-        <img src="{{ gestante.foto.url }}" class="card-img-top" alt="gestante 1">
-        {% endif %}
-
-            <div class="card-body">
-                <h5 class="card-title">{{gestante.nome}}</h5>
-                <p class="card-text">Idade:{{gestante.idade}}</p>
-            </div>
-        </div>
-    </div>
-
-    {% endfor %}
-
-    <div class="col-md-12">
-
-    <section class="tags" style="padding: 10px">
-        <ul class="tags__lista d-flex flex-row justify-content-start list-unstyled mb-0">
-            
-            <li class="tags__tag mr-2">
-                <a href="{% url 'index' %}" class="btn btn-outline-primary">Todos</a>
-            </li>
-
-         
-
-        </ul>
-    </section>
-
-    </div>
-
-    {% else %}
-    <div class="imagem__texto">
-        <p>gestantes não encontrados</p>
-    </div>
-    {% endif %}
-
-
 </div>
+
+<!-- Tabela de gestantes -->
+<div class="row">
+    <div class="col-12 mb-4">
+        {% if cards %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Idade</th>
+                    <th scope="col">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gestante in cards %}
+                <tr onclick="window.location.href='{% url 'gestante' gestante.id %}';">
+                    <td>{{ gestante.nome }}</td>
+                    <td>{{ gestante.idade }}</td>
+                    <td>
+                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary">Detalhes</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="imagem__texto">
+            <p>Gestantes não encontrados</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock %}
