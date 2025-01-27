@@ -1,10 +1,6 @@
 from typing import Optional
 import chainlit as cl
 
-from chainlit import Config
-
-config = Config()
-config.placeholder = "Agente digite sua dúvida aqui..."  # Alterar o texto do placeholder
 
 '''
 @cl.password_auth_callback
@@ -18,6 +14,10 @@ def auth_callback(username: str, password: str):
     else:
         return None
 '''    
+
+settings = cl.ChatSettings(
+    input_placeholder="Digite sua mensagem personalizada..."  # Define o placeholder correto
+)
 
 @cl.on_chat_start
 async def on_chat_start():
