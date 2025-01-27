@@ -56,7 +56,7 @@ def buscar(request):
 
         return render (request, 'gestantes/index.html', {"cards":gestantes})
 
-def novo_gestante(request):
+def nova_gestante(request):
 
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não logado')
