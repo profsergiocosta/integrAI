@@ -30,6 +30,14 @@ def index(request):
         return render(request, 'gestantes/index.html', {"cards":gestantes})
         
 
+def lista_gestantes(request):
+        
+        if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
+        gestantes = Gestante.objects.order_by("-data_cadastro")
+        return render(request, 'gestantes/lista_gestantes.html', {"cards":gestantes})
 
 def gestante(request, gestante_id):
         gestante = get_object_or_404(Gestante, pk=gestante_id)
@@ -61,22 +69,21 @@ def nova_gestante(request):
         messages.error(request, 'Usuário não logado')
         return redirect('login')
 
-    print("nova_gestante")
+
     form = GestanteForms
 
     if request.method == 'POST':
         form = GestanteForms(request.POST, request.FILES)
-        print("post")
+
         
         if form.is_valid():
-            print("valido")
+
             gestante = form.save(commit=False)
             gestante.usuario = request.user    # Define o usuário autenticado
             gestante.save()
             messages.success(request, 'Nova gestante cadastrada!')
             return redirect('index')
         else:
-            print("não válido")
             # Imprime os erros do formulário
             for field in form:
                 if field.errors:
