@@ -62,7 +62,7 @@ def buscar(request):
                     gestantes = gestantes.filter(nome__icontains=nome_a_buscar)
 
 
-        return render (request, 'gestantes/index.html', {"cards":gestantes})
+        return render (request, 'gestantes/lista_gestantes.html', {"cards":gestantes})
 
 def nova_gestante(request):
     if not request.user.is_authenticated:
@@ -82,7 +82,7 @@ def nova_gestante(request):
             gestante.usuario = request.user    # Define o usuário autenticado
             gestante.save()
             messages.success(request, 'Nova gestante cadastrada!')
-            return redirect('index')
+            return redirect('lista_gestantes')
         else:
             # Imprime os erros do formulário
             for field in form:
@@ -104,7 +104,7 @@ def editar_gestante(request, gestante_id):
             print(request.POST)
             form.save()
             messages.success(request, 'gestante editada com sucesso')
-            return redirect('index')
+            return redirect('lista_gestantes')
 
     return render(request, 'gestantes/editar.html', {'form':form, 'gestante_id': gestante_id})
 
@@ -114,7 +114,7 @@ def deletar_gestante(request, gestante_id):
     gestante = Gestante.objects.get(id=gestante_id)
     gestante.delete()
     messages.success(request, 'Deleção feita com sucesso!')
-    return redirect('index')
+    return redirect('lista_gestantes')
 
 
 
