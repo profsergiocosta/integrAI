@@ -26,18 +26,22 @@ def index(request):
                 messages.error(request, 'Usuário não logado')
                 return redirect('login')
 
-        gestantes = Gestante.objects.order_by("-data_cadastro")
+            # Filtra as gestantes pelo usuário logado
+        gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+
         return render(request, 'gestantes/index.html', {"cards":gestantes})
         
 
 def lista_gestantes(request):
-        
-        if not request.user.is_authenticated:
-                messages.error(request, 'Usuário não logado')
-                return redirect('login')
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
 
-        gestantes = Gestante.objects.order_by("-data_cadastro")
-        return render(request, 'gestantes/lista_gestantes.html', {"cards":gestantes})
+    # Filtra as gestantes pelo usuário logado
+    gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+
+    return render(request, 'gestantes/lista_gestantes.html', {"cards": gestantes})
+
 
 def gestante(request, gestante_id):
         gestante = get_object_or_404(Gestante, pk=gestante_id)
