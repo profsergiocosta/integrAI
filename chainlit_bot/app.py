@@ -1,6 +1,11 @@
 from typing import Optional
 import chainlit as cl
 
+from chainlit import Config
+
+config = Config()
+config.placeholder = "Agente digite sua dúvida aqui..."  # Alterar o texto do placeholder
+
 '''
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
