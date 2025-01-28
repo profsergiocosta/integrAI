@@ -94,8 +94,9 @@ footer {
     .navbar-brand {
         white-space: normal; /* Permite quebra de linha */
         word-wrap: break-word; /* Garante a quebra em palavras longas */
-        max-width: 60%; /* Evita que o título ocupe toda a largura */
+        max-width: 90%; /* Evita que o título ocupe toda a largura */
         text-align: left; /* Mantém o texto alinhado à esquerda */
+        text-align: center;
     }
 
     .navbar-toggler {
