@@ -44,6 +44,11 @@ def lista_gestantes(request):
 
 
 def gestante(request, gestante_id):
+
+        if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
         gestante = get_object_or_404(Gestante, pk=gestante_id)
 
         # Obter a última avaliação associada à gestante
@@ -99,6 +104,11 @@ def nova_gestante(request):
 
 
 def editar_gestante(request, gestante_id):
+
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = Gestante.objects.get(id=gestante_id)
     form = GestanteForms(instance=gestante)
 
@@ -115,6 +125,10 @@ def editar_gestante(request, gestante_id):
 
 
 def deletar_gestante(request, gestante_id):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = Gestante.objects.get(id=gestante_id)
     gestante.delete()
     messages.success(request, 'Deleção feita com sucesso!')
@@ -131,6 +145,11 @@ def deletar_gestante(request, gestante_id):
 
 
 def avaliacao(request, gestante_id):
+     
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = get_object_or_404(Gestante, id=gestante_id)
 
     if request.method == 'POST':
@@ -157,10 +176,18 @@ def avaliacao(request, gestante_id):
 
 
 def detalhes_risco(request, gestante_id, risco):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = get_object_or_404(Gestante, id=gestante_id)
     # Lógica para exibir os detalhes do risco
     return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco})
 
 
 def chat(request):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     return render(request, 'avaliacao/chat.html')
