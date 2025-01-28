@@ -90,11 +90,25 @@ footer {
     padding: 10px;
 }
 
-@media (max-width: 992px) {
-    .main-content {
-        margin-left: 0; /* Remove a margem quando a tela for menor */
+@media (max-width: 768px) { /* Ajusta para telas menores */
+    .navbar-brand {
+        white-space: normal; /* Permite quebra de linha */
+        word-wrap: break-word; /* Garante a quebra em palavras longas */
+        max-width: 60%; /* Evita que o título ocupe toda a largura */
+        text-align: left; /* Mantém o texto alinhado à esquerda */
+    }
+
+    .navbar-toggler {
+        order: 1; /* Mantém o botão do menu à direita */
+    }
+
+    .navbar-nav {
+        width: 100%; /* Faz os itens do menu ocuparem toda a largura ao serem abertos */
+        text-align: center; /* Centraliza os links dentro do menu */
     }
 }
+
+
 
 /* Estilizando a tela de login */
 .login-container {
