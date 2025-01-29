@@ -5,11 +5,9 @@
 
 
 
-<div class="row">
-
-      
-    <section style="margin-left: 5em ; margin-bottom: 3em ; margin-top: 3em">
-
+<div class="d-flex justify-content-center mt-4">
+    <section class="card shadow p-4 col-lg-6 col-md-8 col-sm-10">
+ 
     <form action="{% url 'cadastro' %}" method="POST">
         {% csrf_token %}
         <div class="row">
@@ -36,3 +34,5 @@
 
 </div>
 {% endblock %}
+
+

@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 
 from datetime import datetime
 
@@ -26,24 +27,48 @@ class Gestante(models.Model):
         ('SC', 'Ensino superior completo'),
     ]
 
+    RENDA_FAMILIAR = [
+        ('BX', 'Baixa (menos de 1 salário mínimo)'),
+        ('MD', 'Média (entre 1 e 3 salários mínimos)'),
+        ('AT', 'Alta (mais de 3 salários mínimos)'),
+    ]
+
+    VULNERABILIDADE = [
+        (True, 'Sim'),
+        (False, 'Não'),
+    ]
+
     nome = models.CharField(max_length=100)
     peso = models.PositiveIntegerField(verbose_name="Peso pré-gestacional (kg)")
     idade = models.PositiveIntegerField()
-    
+    altura = models.FloatField(verbose_name="Altura (m)", blank=True, null=True)
+
     def foto_upload_path(instance, filename):
         return f'fotos/{instance.nome}_{instance.id}/{filename}'
 
     foto = models.ImageField(upload_to=foto_upload_path, blank=True)
+
     residencia = models.CharField(
         max_length=1, 
         choices=RESIDENCIA_CHOICES, 
         default='U', 
         verbose_name="Em qual tipo de área está localizada a residência da gestante?"
     )
+
+    vulnerabilidade_social = models.BooleanField(
+        default=False, 
+        choices=VULNERABILIDADE,
+        blank=True,
+        verbose_name='Com base nas suas visitas domiciliares, você considera essa gestante em condição de vulnerabilidade social?'
+    )
+    
     ocupacao_chefe_familia = models.CharField(max_length=2, choices=OCUPACAO_CHEFE_CHOICES, verbose_name="Qual é a ocupação do chefe da família?", blank=True)
     nivel_escolaridade = models.CharField(max_length=2, choices=ESCOLARIDADE_CHOICES, verbose_name="Qual é o nível de escolaridade mais alto que você completou?", blank=True)
+    renda_familiar = models.CharField(max_length=2, choices=RENDA_FAMILIAR, verbose_name="Como você classificaria sua renda familiar?", blank=True)
+
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
 
     usuario = models.ForeignKey(
         to=User,
@@ -66,6 +91,9 @@ class Gestante(models.Model):
         ordering = ['-data_cadastro']
         verbose_name = "Gestante"
         verbose_name_plural = "Gestantes"
+        
+
+
 
 
 class Avaliacao(models.Model):
@@ -81,6 +109,10 @@ class Avaliacao(models.Model):
     peso_atual = models.FloatField(
         verbose_name="Peso atual:"
     )
+
+    idade_gestacional = models.PositiveIntegerField(verbose_name="Idade Gestacional ou Trimestre da Gestação", null=True)
+
+    consultas_prenatal = models.PositiveIntegerField(verbose_name="Quantidade de consultas pré-natal", null=True)
 
     periodontite = models.BooleanField(
         default=False, 
@@ -111,7 +143,6 @@ class Avaliacao(models.Model):
     )
 
 
-   # Novas colunas para probabilidades
     probabilidade_asma = models.FloatField(null=True, blank=True)
     probabilidade_obesidade = models.FloatField(null=True, blank=True)
     probabilidade_carie = models.FloatField(null=True, blank=True)

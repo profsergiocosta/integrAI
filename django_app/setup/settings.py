@@ -152,3 +152,5 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success'
 }
 
+# remover
+ALLOWED_HOSTS = ['*']

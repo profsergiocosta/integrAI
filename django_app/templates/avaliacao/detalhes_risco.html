@@ -4,14 +4,74 @@
 {% load static %}
 {% block content %}
 
-<h3>Aqui vamos detalhar os riscos</h3>
 
-<p>
-    Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
-</p>
+<!-- Card de Dicas Práticas -->
+<div class="col-lg-12 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-center">Recomendações Gerais para <strong>{{ gestante.nome }}</strong></h5>
 
+            {% if risco == "carie" %}
 
+            <p>
+                Olá, <strong> {{ request.user }}</strong>! Eu sou a Maria, ACS e sua companheira nessa jornada de saúde. Vamos falar sobre a cárie, uma doença que pode afetar a saúde bucal das gestantes e de seus bebês.
 
+            </p>
+
+            <p class="text-muted text-center">
+            <strong> {{ request.user }}</strong>, aqui vão algumas recomendações você para utilizar ao conversar com {{ gestante.nome }} sobre a prevenção e controle da cárie:
+            </p>
+
+            <!-- Dica: Higiene Bucal -->
+            <div class="mb-3">
+                <h6 class="text-primary"><i class="fas fa-tooth"></i> Higiene Bucal Adequada</h6>
+                <p>
+                    Lembre as gestantes de que a higiene bucal é fundamental para prevenir a cárie. Sugira que elas escovem os dentes pelo menos duas vezes ao dia com flúor e usem fio dental diariamente.
+                    Além disso, é importante visitar o dentista regularmente para check-ups e limpeza.
+                </p>
+                <blockquote class="blockquote text-muted">
+                    "Lembre-se de escovar os dentes após cada refeição e visitar o dentista a cada 6 meses para manter a saúde bucal em dia!"
+                </blockquote>
+            </div>
+
+            <!-- Dica: Alimentação Saudável -->
+            <div class="mb-3">
+                <h6 class="text-success"><i class="fas fa-apple-alt"></i> Alimentação Saudável</h6>
+                <p>
+                    Converse com as gestantes sobre a importância de uma alimentação equilibrada para prevenir a cárie. Incentive a redução do consumo de alimentos açucarados e ácidos, 
+                    e a preferência por alimentos ricos em cálcio, como leite e queijo.
+                </p>
+                <blockquote class="blockquote text-muted">
+                    "Tente incluir alimentos ricos em cálcio na sua dieta, como leite e queijo, e evite alimentos açucarados e ácidos que podem danificar os dentes."
+                </blockquote>
+            </div>
+
+            <!-- Dica: Uso Responsável de Chupetas -->
+            <div>
+                <h6 class="text-warning"><i class="fas fa-baby"></i> Uso Responsável de Chupetas</h6>
+                <p>
+                    Oriente as gestantes a evitar o uso excessivo de chupetas adocicadas. Recomende chupetas sem açúcar e incentive o oferecimento de água ou leite materno como alternativas. 
+                    Além disso, é essencial manter as chupetas limpas para evitar a proliferação de bactérias.
+                </p>
+                <blockquote class="blockquote text-muted">
+                    "Tente usar chupetas sem açúcar ou ofereça água ou leite materno em vez de chupetas adocicadas, e lembre-se de limpar as chupetas regularmente para evitar a acumulação de bactérias."
+                </blockquote>
+            </div>
+            {% else %}
+
+            <p style="color:red"> Incluído apenas um texto exemplo para cárie </p>
+
+            {% endif %}
+
+            <div class="text-center mt-3">
+                <a href={% url 'chat' %} class="btn btn-primary">
+                    <i class="fas fa-comments"></i> Iniciar conversa com a MarIA
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}

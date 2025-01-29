@@ -26,12 +26,29 @@ def index(request):
                 messages.error(request, 'Usuário não logado')
                 return redirect('login')
 
-        gestantes = Gestante.objects.order_by("-data_cadastro")
+            # Filtra as gestantes pelo usuário logado
+        gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+
         return render(request, 'gestantes/index.html', {"cards":gestantes})
         
 
+def lista_gestantes(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
+
+    # Filtra as gestantes pelo usuário logado
+    gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+
+    return render(request, 'gestantes/lista_gestantes.html', {"cards": gestantes})
+
 
 def gestante(request, gestante_id):
+
+        if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
         gestante = get_object_or_404(Gestante, pk=gestante_id)
 
         # Obter a última avaliação associada à gestante
@@ -54,30 +71,44 @@ def buscar(request):
                     gestantes = gestantes.filter(nome__icontains=nome_a_buscar)
 
 
-        return render (request, 'gestantes/index.html', {"cards":gestantes})
+        return render (request, 'gestantes/lista_gestantes.html', {"cards":gestantes})
 
-def novo_gestante(request):
-
+def nova_gestante(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não logado')
         return redirect('login')
 
+
     form = GestanteForms
-    
+
     if request.method == 'POST':
         form = GestanteForms(request.POST, request.FILES)
+
+        
         if form.is_valid():
-            
+
             gestante = form.save(commit=False)
             gestante.usuario = request.user    # Define o usuário autenticado
             gestante.save()
-            messages.success(request, 'Novo gestante cadastrado!')
-            return redirect('index')
-    
-    return render(request, 'gestantes/novo.html', {'form': form})
+            messages.success(request, 'Nova gestante cadastrada!')
+            return redirect('lista_gestantes')
+        else:
+            # Imprime os erros do formulário
+            for field in form:
+                if field.errors:
+                    print(f"Erros no campo {field.name}: {field.errors}")
+            # Se preferir, pode imprimir todos os erros de uma vez
+            print("Erros gerais:", form.errors)
+
+    return render(request, 'gestantes/nova.html', {'form': form})
 
 
 def editar_gestante(request, gestante_id):
+
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = Gestante.objects.get(id=gestante_id)
     form = GestanteForms(instance=gestante)
 
@@ -87,17 +118,21 @@ def editar_gestante(request, gestante_id):
             print(request.POST)
             form.save()
             messages.success(request, 'gestante editada com sucesso')
-            return redirect('index')
+            return redirect('lista_gestantes')
 
     return render(request, 'gestantes/editar.html', {'form':form, 'gestante_id': gestante_id})
 
 
 
 def deletar_gestante(request, gestante_id):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = Gestante.objects.get(id=gestante_id)
     gestante.delete()
     messages.success(request, 'Deleção feita com sucesso!')
-    return redirect('index')
+    return redirect('lista_gestantes')
 
 
 
@@ -110,6 +145,11 @@ def deletar_gestante(request, gestante_id):
 
 
 def avaliacao(request, gestante_id):
+     
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = get_object_or_404(Gestante, id=gestante_id)
 
     if request.method == 'POST':
@@ -136,10 +176,18 @@ def avaliacao(request, gestante_id):
 
 
 def detalhes_risco(request, gestante_id, risco):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     gestante = get_object_or_404(Gestante, id=gestante_id)
     # Lógica para exibir os detalhes do risco
     return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco})
 
 
 def chat(request):
+    if not request.user.is_authenticated:
+                messages.error(request, 'Usuário não logado')
+                return redirect('login')
+
     return render(request, 'avaliacao/chat.html')
