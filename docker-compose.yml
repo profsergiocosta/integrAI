@@ -17,6 +17,12 @@ services:
     container_name: chainlit_bot
     ports:
       - "8080:8080"
+
+  rmodels:
+    build: ./r_models
+    container_name: r_models
+    ports:
+      - "5000:5000"
       
   django:
     build: ./django_app

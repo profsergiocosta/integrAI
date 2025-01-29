@@ -6,12 +6,39 @@ from apps.gestantes.models import Gestante, Avaliacao
 
 from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 
-
 import random
+
+import requests
 
 # Funções para calcular as probabilidades
 def calcular_probabilidade_asma():
-    return round(random.uniform(0, 100), 2)
+    # experimentando chamando a api do R
+    
+    #return round(random.uniform(0, 100), 2)
+
+    nums = [10, 90]
+
+    # URL do endpoint da API Plumber (certifique-se de que o URL esteja correto)
+    url = 'http://rmodels:5000/mean'
+
+    # Dados a serem enviados no corpo da requisição (em formato JSON)
+    payload = {'nums': nums}
+
+    result = 0
+
+    try:
+        # Enviando a requisição POST para a API
+        response = requests.post(url, json=payload)
+
+        # Verificando se a requisição foi bem-sucedida
+        if response.status_code == 200:
+            result = response.json().get('data')[0]
+        else:
+            result = 99
+    except Exception as e:
+        result = 42
+
+    return result
 
 def calcular_probabilidade_obesidade():
     return round(random.uniform(0, 100), 2)
@@ -142,6 +169,33 @@ def deletar_gestante(request, gestante_id):
     #return render(request, 'gestantes/index.html', {"cards": gestantes})
 
 
+
+
+def avaliacao__(request, gestante_id):
+    # Dados de exemplo para enviar para a API (substitua conforme necessário)
+    nums = [10, 90]
+
+    # URL do endpoint da API Plumber (certifique-se de que o URL esteja correto)
+    url = 'http://rmodels:5000/mean'
+
+    # Dados a serem enviados no corpo da requisição (em formato JSON)
+    payload = {'nums': nums}
+
+    try:
+        # Enviando a requisição POST para a API
+        response = requests.post(url, json=payload)
+
+        # Verificando se a requisição foi bem-sucedida
+        if response.status_code == 200:
+            result = response.json().get('data')
+        else:
+            result = 69
+    except Exception as e:
+        result = 42
+        print(f"Erro na requisição à API: {e}")
+
+    # Renderizando a resposta na página (pode ser uma página com o resultado da média)
+    return render(request, 'avaliacao/avaliacao.html', {'result': result})
 
 
 def avaliacao(request, gestante_id):

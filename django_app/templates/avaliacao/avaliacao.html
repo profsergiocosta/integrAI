@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h3 class="text-center mb-4">Avaliação de Gestante</h3>
+
+        {% if result %}
+            <p>A média dos valores é: {{ result }}</p>
+        {% else %}
+            <p>Ocorreu um erro ao calcular a média.</p>
+        {% endif %}
+
+    </div>
+{% endblock %}
