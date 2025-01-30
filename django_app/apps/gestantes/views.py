@@ -10,6 +10,53 @@ import random
 
 import requests
 
+
+from .forms import EmpresaForm
+
+
+def empresa_view(request):
+    resultado = None  # Variável para armazenar o resultado da API
+    if request.method == "POST":
+        form = EmpresaForm(request.POST)
+        if form.is_valid():
+            valor = form.cleaned_data["valor"]
+            costa = form.cleaned_data["costa"]
+
+            # Preparando o payload para enviar para a API
+            payload = {
+                "vala": float(valor),
+                "coas": "yes" if costa == "Sim" else "no"
+            }
+
+            # Fazendo a requisição para o modelo
+            try:
+                response = requests.post("http://rmodels:5000/predict", json=payload)
+                response.raise_for_status()  # Vai gerar erro se a requisição não for bem-sucedida
+                resultado = response.json()  # Esperando um retorno em JSON da API
+            except requests.exceptions.RequestException as e:
+                # Caso haja erro na requisição
+                resultado = {"erro": str(e)}
+
+    else:
+        form = EmpresaForm()
+
+    return render(request, "gestantes/teste_apir.html", {"form": form, "resultado": resultado})
+
+
+def empresa_view__(request):
+    if request.method == "POST":
+        form = EmpresaForm(request.POST)
+        if form.is_valid():
+            valor = form.cleaned_data["valor"]
+            costa = form.cleaned_data["costa"]
+            # Aqui você pode processar os dados (salvar no banco, etc.)
+            return render(request, "gestantes/teste_apir.html", {"valor": valor, "costa": costa})
+    else:
+        form = EmpresaForm()
+
+    return render(request, "gestantes/teste_apir.html", {"form": form})
+
+
 # Funções para calcular as probabilidades
 def calcular_probabilidade_asma():
     # experimentando chamando a api do R

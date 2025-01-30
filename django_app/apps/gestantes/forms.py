@@ -48,4 +48,11 @@ class AvaliacaoForm(forms.ModelForm):
         model = Avaliacao
         exclude = ['gestante', 'probabilidade_asma', 'probabilidade_obesidade', 'probabilidade_carie']
 
-   
+ ## apagar depois  
+class EmpresaForm(forms.Form):
+    valor = forms.DecimalField(label="Valor da Empresa (em milhões)", min_value=0, required=True)
+    costa = forms.ChoiceField(
+        label="Localizada na Costa?", 
+        choices=[("Sim", "Sim"), ("Não", "Não")],
+        required=True
+    )
