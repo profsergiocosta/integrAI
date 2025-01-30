@@ -40,3 +40,35 @@ function(nums) {
     # Retorna a resposta no formato esperado pelo frontend
     list(data = resultado)  # O campo 'data' conterá o valor da média
 }
+
+
+
+#* Um exemplo simples de previsão
+#* @post /predict
+#* @param req O corpo da requisição (JSON contendo 'vala' e 'coas')
+#* @serializer json
+function(req) {
+  
+  # Parse do JSON recebido
+  body <- jsonlite::fromJSON(req$postBody)
+  
+  # Validar se os campos esperados existem
+  if (!"vala" %in% names(body) || !"coas" %in% names(body)) {
+    return(list(error = "Os campos 'vala' e 'coas' são obrigatórios."))
+  }
+  
+  # Carregar o modelo salvo
+  modelo <- readRDS("modelo_linear.rds")
+  
+  # Criar um data frame com os valores recebidos
+  novo_valor <- data.frame(
+    vala = as.numeric(body$vala),  # Converte 'vala' para numérico
+    coas = body$coas
+  )
+  
+  # Fazer a previsão
+  previsao <- predict(modelo, newdata = novo_valor)
+  
+  # Retorna a resposta no formato JSON
+  list(previsao = previsao[1])
+}
