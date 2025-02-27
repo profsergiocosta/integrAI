@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.gestantes.apps.GestantesConfig',
-    'apps.usuarios.apps.UsuariosConfig'
+    'apps.usuarios.apps.UsuariosConfig',
+    'pwa',
+
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,13 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+'''
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mydb',  # Nome do banco de dados (POSTGRES_DB)
         'USER': 'user',  # Usuário do banco de dados (POSTGRES_USER)
@@ -90,6 +99,7 @@ DATABASES = {
     }
 }
 
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -154,3 +164,28 @@ MESSAGE_TAGS = {
 
 # remover
 ALLOWED_HOSTS = ['*']
+
+
+## PWA
+## informacoes usadas para instalacao
+PWA_APP_NAME = "Calculadora Gestantes"
+PWA_APP_DESCRIPTION = "Calculadora Gestantes"
+PWA_APP_THEME_COLOR = "#007bff"
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_START_URL = '/'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/apple-icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')

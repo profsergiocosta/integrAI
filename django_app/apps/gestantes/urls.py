@@ -1,6 +1,10 @@
 from django.urls import path
 from apps.gestantes.views import empresa_view, index, lista_gestantes, gestante, buscar, nova_gestante, deletar_gestante, editar_gestante, avaliacao, detalhes_risco, chat
 
+from pwa import views as pwa_views
+from django.views.decorators.cache import cache_page
+from django.conf import settings
+
 urlpatterns = [
         path('', index, name='index'),
 
@@ -21,6 +25,9 @@ urlpatterns = [
         path('editar-gestante/<int:gestante_id>', editar_gestante, name='editar_gestante'),
         path('deletar-gestante/<int:gestante_id>', deletar_gestante, name='deletar_gestante'),
         path('gestante/<int:gestante_id>/risco/<str:risco>/', detalhes_risco, name='detalhes_risco'),
+
+
+         
 
         #path('filtro/<str:categoria>', filtro, name='filtro'),
 ]
