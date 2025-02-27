@@ -4,7 +4,8 @@ from apps.gestantes.views import empresa_view, index, lista_gestantes, gestante,
 urlpatterns = [
         path('', index, name='index'),
 
-        path("empresa/", empresa_view, name="empresa"),
+        # testar a integracao com api R
+        #path("empresa/", empresa_view, name="empresa"),
 
         path('lista_gestantes', lista_gestantes, name='lista_gestantes'),
 
