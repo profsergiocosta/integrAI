@@ -76,9 +76,21 @@
 <div class="col-lg-6 col-md-12 mb-4">
     <div class="card shadow-sm">
         <div class="card-body text-center">
-            <h5 class="card-title">Riscos da Ultima Avaliação</h5>
-            {% if ultima_avaliacao %}
-                <p class="text-muted"></p>
+            {% if penultima_avaliacao %}
+                <h5 class="card-title">Evolução dos Riscos</h5>
+                <p class="text-muted">Comparativo entre as duas últimas avaliações:</p>
+
+                <ul class="list-group text-start">
+                    {% for risco in evolucao_riscos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ risco.direcao }} {{ risco.nome }}: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}</span>
+                            <span class="{{ risco.classe }}"></span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% elif ultima_avaliacao %}
+                <h5 class="card-title">Riscos da Última Avaliação</h5>
+                <p class="text-muted">Resumo dos riscos identificados:</p>
 
                 <ul class="list-group text-start">
                     {% for risco in riscos %}
@@ -89,6 +101,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
+                <h5 class="card-title">Sem Avaliações</h5>
                 <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
             {% endif %}
 
@@ -101,6 +114,7 @@
         </div>
     </div>
 </div>
+
 
 
         

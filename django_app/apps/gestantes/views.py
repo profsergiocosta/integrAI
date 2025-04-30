@@ -32,51 +32,89 @@ def lista_gestantes(request):
 
     return render(request, 'gestantes/lista_gestantes.html', {"cards": gestantes})
 
-
 def gestante(request, gestante_id):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
 
-        if not request.user.is_authenticated:
-                messages.error(request, 'Usuário não logado')
-                return redirect('login')
+    gestante = get_object_or_404(Gestante, pk=gestante_id)
+    avaliacoes = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao')[:2]
 
-        gestante = get_object_or_404(Gestante, pk=gestante_id)
+    ultima_avaliacao = avaliacoes[0] if len(avaliacoes) > 0 else None
+    penultima_avaliacao = avaliacoes[1] if len(avaliacoes) > 1 else None
 
-        # Obter a última avaliação associada à gestante
-        ultima_avaliacao = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao').first()
+    def classificar_risco(prob):
+        if prob >= 70:
+            return "🚨", "text-danger"
+        elif prob >= 31:
+            return "⚠️", "text-warning"
+        else:
+            return "✅", "text-success"
 
-        def classificar_risco(prob):
-            if prob >= 70:
-                return ("🚨", "text-danger")
-            elif prob >= 31:
-                return ("⚠️", "text-warning")
-            else:
-                return ("✅", "text-success")
+    riscos = []
+    evolucao_riscos = []
 
-        riscos = []
-        if ultima_avaliacao:
-            avaliacoes = {
-                "Asma": ultima_avaliacao.resultado_asma["probabilidade"],
-                "Obesidade": ultima_avaliacao.resultado_obesidade["probabilidade"],
-                "Cárie": ultima_avaliacao.resultado_carie["probabilidade"],
-                "Alergia": ultima_avaliacao.resultado_alergia["probabilidade"],
+    if ultima_avaliacao:
+        aval_ultima = {
+            "Asma": ultima_avaliacao.resultado_asma["probabilidade"],
+            "Obesidade": ultima_avaliacao.resultado_obesidade["probabilidade"],
+            "Cárie": ultima_avaliacao.resultado_carie["probabilidade"],
+            "Alergia": ultima_avaliacao.resultado_alergia["probabilidade"],
+        }
+
+        for nome, prob in aval_ultima.items():
+            icone, classe = classificar_risco(prob)
+            riscos.append({
+                "nome": nome,
+                "valor": round(prob),
+                "icone": icone,
+                "classe": classe
+            })
+
+        if penultima_avaliacao:
+            aval_penultima = {
+                "Asma": penultima_avaliacao.resultado_asma["probabilidade"],
+                "Obesidade": penultima_avaliacao.resultado_obesidade["probabilidade"],
+                "Cárie": penultima_avaliacao.resultado_carie["probabilidade"],
+                "Alergia": penultima_avaliacao.resultado_alergia["probabilidade"],
             }
 
-            for nome, prob in avaliacoes.items():
-                icone, classe = classificar_risco(prob)
-                riscos.append({
+            for nome in aval_ultima:
+                atual = aval_ultima[nome]
+                anterior = aval_penultima[nome]
+
+                if atual > anterior:
+                    direcao = "📈"
+                    seta = "↑"
+                elif atual < anterior:
+                    direcao = "📉"
+                    seta = "↓"
+                else:
+                    direcao = "➡️"
+                    seta = "="
+
+                icone_atual, classe = classificar_risco(atual)
+
+                evolucao_riscos.append({
                     "nome": nome,
-                    "valor": round(prob),
-                    "icone": icone,
+                    "direcao": direcao,
+                    "seta": seta,
+                    "anterior": round(anterior),
+                    "atual": round(atual),
+                    "icone": icone_atual,
                     "classe": classe
                 })
 
-        context = {
-            "gestante": gestante,
-            "ultima_avaliacao": ultima_avaliacao,
-            "riscos": riscos,
-        }
+    context = {
+        "gestante": gestante,
+        "ultima_avaliacao": ultima_avaliacao,
+        "penultima_avaliacao": penultima_avaliacao,
+        "riscos": riscos,
+        "evolucao_riscos": evolucao_riscos,
+    }
 
-        return render(request, 'gestantes/gestante.html', context)
+    return render(request, 'gestantes/gestante.html', context)
+
 
 def buscar(request):
 
