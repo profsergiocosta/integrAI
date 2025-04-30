@@ -13,12 +13,19 @@
             {% for field in form.visible_fields %}
             <div class="mb-3 text-start">
                 {% if field.field.widget.input_type == 'checkbox' %}
-                <!-- Checkbox -->
-                <div class="form-check">
-                    {{ field|add_class:"form-check-input me-2" }}  
-                    <label class="form-check-label" for="{{ field.id_for_label }}">
-                        <strong>{{ forloop.counter }}.</strong> {{ field.label }}
-                    </label>
+                <!-- Campo booleano (transformado em radio buttons) -->
+                <label class="form-label d-block">
+                    <strong>{{ forloop.counter }}.</strong> {{ field.label }}
+                </label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="{{ field.html_name }}" value="True" id="{{ field.id_for_label }}_sim"
+                        {% if field.value %}checked{% endif %}>
+                    <label class="form-check-label" for="{{ field.id_for_label }}_sim">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="{{ field.html_name }}" value="False" id="{{ field.id_for_label }}_nao"
+                        {% if not field.value %}checked{% endif %}>
+                    <label class="form-check-label" for="{{ field.id_for_label }}_nao">Não</label>
                 </div>
                 {% else %}
                 <!-- Outros campos (inputs, selects, etc.) -->

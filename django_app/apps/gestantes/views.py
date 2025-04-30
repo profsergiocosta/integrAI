@@ -7,17 +7,7 @@ from apps.gestantes.models import Gestante, Avaliacao
 from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 
 
-import random
 
-# Funções para calcular as probabilidades
-def calcular_probabilidade_asma():
-    return round(random.uniform(0, 100), 2)
-
-def calcular_probabilidade_obesidade():
-    return round(random.uniform(0, 100), 2)
-
-def calcular_probabilidade_carie():
-    return round(random.uniform(0, 100), 2)
 
 
 def index(request):
@@ -145,10 +135,9 @@ def deletar_gestante(request, gestante_id):
 
 
 def avaliacao(request, gestante_id):
-     
     if not request.user.is_authenticated:
-                messages.error(request, 'Usuário não logado')
-                return redirect('login')
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
 
     gestante = get_object_or_404(Gestante, id=gestante_id)
 
@@ -159,12 +148,7 @@ def avaliacao(request, gestante_id):
             questionario = form.save(commit=False)
             questionario.gestante = gestante  # Associar o questionário à gestante
 
-            # Calculando as probabilidades antes de salvar
-            questionario.probabilidade_asma = calcular_probabilidade_asma()
-            questionario.probabilidade_obesidade = calcular_probabilidade_obesidade()
-            questionario.probabilidade_carie = calcular_probabilidade_carie()
-
-            # Salvar o questionário com as probabilidades calculadas
+            # Salvar o questionário com as probabilidades calculadas (já calculadas no form)
             questionario.save()
 
             # Redirecionar após o cadastro

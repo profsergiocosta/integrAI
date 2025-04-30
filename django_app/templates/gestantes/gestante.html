@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% load static %}
+{% load l10n %}
 {% block content %}
 
 <div class="container">
@@ -19,11 +20,15 @@
                     <h5 class="card-title mb-2">{{ gestante.nome }}</h5>
                     <p class="card-text">Idade: <strong>{{ gestante.idade }}</strong></p>
 
+                    {% localize on %}
+
                     <!-- Informações adicionais -->
                     <p class="card-text">
                         <strong>Altura:</strong> {{ gestante.altura }} m
                     </p>
 
+                    {% endlocalize %}
+                    
                     <!-- Peso (Peso atual, se houver avaliação) -->
                     {% if ultima_avaliacao %}
                         <p class="card-text">
@@ -31,7 +36,10 @@
                         </p>
                     {% else %}
                         <p class="card-text">
-                            <strong>Peso:</strong> {{ gestante.peso }} kg
+                            <strong>Peso Pré-Gestacional:</strong> {{ gestante.peso }} kg
+                        </p>
+                        <p class="card-text">
+                            <strong>IMC Pré-Gestacional:</strong> {{ gestante.imc }} ({{ gestante.imc_classificacao }})
                         </p>
                     {% endif %}
 

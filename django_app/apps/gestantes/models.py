@@ -6,32 +6,10 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+from django.contrib.postgres.fields import JSONField  # Se estiver usando PostgreSQL
+
 
 class Gestante(models.Model):
-
-    RESIDENCIA_CHOICES = [
-        ('U', 'Urbana'),
-        ('R', 'Rural'),
-    ]
-
-    OCUPACAO_CHEFE_CHOICES = [
-        ('NQ', 'Mão de obra não qualificada (ex.: serviços gerais, agricultura, etc.)'),
-        ('Q', 'Mão de obra qualificada (ex.: professor, técnico, etc.)'),
-        ('D', 'Desempregada'),
-    ]
-
-    ESCOLARIDADE_CHOICES = [
-        ('NS', 'Não estudou/sabe ler e escrever'),
-        ('FI', 'Ensino fundamental incompleto'),
-        ('MC', 'Ensino médio completo'),
-        ('SC', 'Ensino superior completo'),
-    ]
-
-    RENDA_FAMILIAR = [
-        ('BX', 'Baixa (menos de 1 salário mínimo)'),
-        ('MD', 'Média (entre 1 e 3 salários mínimos)'),
-        ('AT', 'Alta (mais de 3 salários mínimos)'),
-    ]
 
     VULNERABILIDADE = [
         (True, 'Sim'),
@@ -39,20 +17,16 @@ class Gestante(models.Model):
     ]
 
     nome = models.CharField(max_length=100)
-    peso = models.PositiveIntegerField(verbose_name="Peso pré-gestacional (kg)")
     idade = models.PositiveIntegerField()
-    altura = models.FloatField(verbose_name="Altura (m)", blank=True, null=True)
-
-    def foto_upload_path(instance, filename):
-        return f'fotos/{instance.nome}_{instance.id}/{filename}'
-
-    foto = models.ImageField(upload_to=foto_upload_path, blank=True)
-
-    residencia = models.CharField(
-        max_length=1, 
-        choices=RESIDENCIA_CHOICES, 
-        default='U', 
-        verbose_name="Em qual tipo de área está localizada a residência da gestante?"
+    peso = models.PositiveIntegerField(
+        verbose_name="Peso pré-gestacional (kg)",
+        blank=False,
+        null=False
+    )
+    altura = models.FloatField(
+        verbose_name="Altura (m)",
+        blank=False,
+        null=False
     )
 
     vulnerabilidade_social = models.BooleanField(
@@ -61,14 +35,15 @@ class Gestante(models.Model):
         blank=True,
         verbose_name='Com base nas suas visitas domiciliares, você considera essa gestante em condição de vulnerabilidade social?'
     )
+
+    def foto_upload_path(instance, filename):
+        return f'fotos/{instance.nome}_{instance.id}/{filename}'
+
+    foto = models.ImageField(upload_to=foto_upload_path, blank=True)
+
+
     
-    ocupacao_chefe_familia = models.CharField(max_length=2, choices=OCUPACAO_CHEFE_CHOICES, verbose_name="Qual é a ocupação do chefe da família?", blank=True)
-    nivel_escolaridade = models.CharField(max_length=2, choices=ESCOLARIDADE_CHOICES, verbose_name="Qual é o nível de escolaridade mais alto que você completou?", blank=True)
-    renda_familiar = models.CharField(max_length=2, choices=RENDA_FAMILIAR, verbose_name="Como você classificaria sua renda familiar?", blank=True)
-
-
     data_cadastro = models.DateTimeField(auto_now_add=True)
-
 
     usuario = models.ForeignKey(
         to=User,
@@ -78,22 +53,39 @@ class Gestante(models.Model):
         related_name='user'
     )
 
+    @property
+    def imc(self):
+        if self.altura > 0:
+            return round(self.peso / (self.altura ** 2), 2)
+        return None
+
+    @property
+    def imc_classificacao(self):
+        imc = self.imc
+        if imc is None:
+            return "Altura ou peso inválidos"
+        if imc < 18.5:
+            return "Baixo peso"
+        elif 18.5 <= imc <= 24.9:
+            return "Adequado"
+        else:
+            return "Excesso de peso"
+
     def clean(self):
         if self.peso < 30 or self.peso > 200:
             raise ValidationError("O peso deve estar entre 30 e 200 kg.")
         if self.idade < 10 or self.idade > 60:
             raise ValidationError("A idade deve estar entre 10 e 60 anos.")
+        if self.altura < 1.0 or self.altura > 2.5:
+            raise ValidationError("A altura deve estar entre 1.0 e 2.5 metros.")
 
     def __str__(self):
-        return f"{self.nome} (Idade: {self.idade}, Residência: {self.get_residencia_display()})"
+        return f"{self.nome} (Idade: {self.idade})"
 
     class Meta:
         ordering = ['-data_cadastro']
         verbose_name = "Gestante"
         verbose_name_plural = "Gestantes"
-        
-
-
 
 
 class Avaliacao(models.Model):
@@ -110,43 +102,75 @@ class Avaliacao(models.Model):
         verbose_name="Peso atual:"
     )
 
-    idade_gestacional = models.PositiveIntegerField(verbose_name="Idade Gestacional ou Trimestre da Gestação", null=True)
+    idade_gestacional = models.PositiveIntegerField(verbose_name="Idade Gestacional (em semanas)", null=True)
 
     consultas_prenatal = models.PositiveIntegerField(verbose_name="Quantidade de consultas pré-natal", null=True)
 
-    periodontite = models.BooleanField(
+    corrimento_vaginal = models.BooleanField(
         default=False, 
-        verbose_name='Você já teve periodontite (inflamação na gengiva) diagnosticada nesta gestação?'
+        verbose_name='Durante a gestação, você apresentou ou apresenta corrimento vaginal frequente?'
     )
-    carie_gestacao = models.BooleanField(
+
+    periodontite_carie = models.BooleanField(
         default=False, 
-        verbose_name='Você tem ou já teve cárie nesta gestação?'
+        verbose_name='Você já teve cárie e/ou periodontite (inflamação na gengiva) diagnosticada nesta gestação?'
     )
-    orientacao_medica = models.BooleanField(
-        default=False, 
-        verbose_name='Você já teve orientação médica ou odontológica sobre cuidados durante a gestação?'
-    )
+
     hipertensao_gestacao = models.BooleanField(
         default=False, 
         verbose_name='Você foi diagnosticada com hipertensão (pressão alta) nesta gestação?'
     )
-    dificuldade_acesso = models.BooleanField(
+
+    diabetes_gestacao = models.BooleanField(
         default=False, 
-        verbose_name='Durante a gestação, você sentiu dificuldade em acessar atendimento médico ou exames necessários?'
+        verbose_name='Você foi diagnosticada com diabetes nesta gestação?'
     )
 
-    tipo_parto = models.CharField(
-        max_length=10,
-        choices=PARTO_CHOICES,
-        verbose_name='Você pretende ter o seu filho de parto vaginal ou cesáreo?',
-        default='Vaginal'
+    estresse_gestacao = models.BooleanField(
+        default=False,
+        verbose_name='Você passou por algum estresse durante a gestação (violência, sobrecarga de trabalho)?'
+    )
+
+    historico_familiar_alergia = models.BooleanField(
+        default=False,
+        verbose_name='Algum membro da sua família (pai, mãe, irmãos) tem histórico de asma, rinite ou dermatite?'
+    )
+
+    consumo_bebidas_adocadas = models.BooleanField(
+        default=False,
+        verbose_name='Na última semana você consumiu refrigerante e outras bebidas industrializadas adoçadas artificialmente, como suco de caixinha, achocolatados, etc?'
+    )
+
+    consumo_ultraprocessados = models.BooleanField(
+        default=False,
+        verbose_name='Na última semana você consumiu alimentos ultraprocessados (ex.: sorvete, salgadinhos, salsicha, linguiça, presuntos, macarrão instantâneo, biscoitos recheados, etc)?'
+    )
+
+    consumo_alcool = models.BooleanField(
+        default=False,
+        verbose_name='Você consome/consumiu bebidas alcoólicas (cerveja, vinho, vodka, cachaça, etc) nesta gestação?'
+    )
+
+    fumante_gestacao = models.BooleanField(
+        default=False,
+        verbose_name='Você tinha o hábito de fumar ou fumou nesta gestação?'
     )
 
 
-    probabilidade_asma = models.FloatField(null=True, blank=True)
-    probabilidade_obesidade = models.FloatField(null=True, blank=True)
-    probabilidade_carie = models.FloatField(null=True, blank=True)
 
+    resultado_asma = models.JSONField(null=True, blank=True)
+    resultado_obesidade = models.JSONField(null=True, blank=True)
+    resultado_carie = models.JSONField(null=True, blank=True)
+    resultado_alergia = models.JSONField(null=True, blank=True)
+    resultado_integralidade_saude = models.JSONField(null=True, blank=True)
+    
+
+    @property
+    def ganho_peso(self):
+        """Cálculo do ganho de peso durante a gestação"""
+        if self.gestante and self.gestante.peso and self.peso_atual:
+            return round(self.peso_atual - self.gestante.peso, 2)
+        return None
 
     class Meta:
         verbose_name = 'Avaliacao'

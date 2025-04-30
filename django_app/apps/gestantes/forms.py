@@ -3,17 +3,23 @@ from django import forms
 from apps.gestantes.models import Gestante, Avaliacao
 from django.utils.safestring import mark_safe
 
-# Criar o widget personalizado
-class CustomCheckboxInput(forms.CheckboxInput):
-    def render(self, name, value, attrs=None, renderer=None):
-        # Renderiza o checkbox com o label após o campo
-        checkbox_html = super().render(name, value, attrs, renderer)
-        #print (checkbox_html, type(checkbox_html))
-        #label = f'<label for="{attrs["id"]}">{self.attrs["label"]}</label>'
-        label = '<label for="ola">ola</label>'
-        return mark_safe(f'{checkbox_html}{label}')
-        print (self.attrs)
-        
+
+
+import random
+
+# Funções para calcular as probabilidades
+def calcular_probabilidade_asma(avaliacao):
+    return round(random.uniform(0, 100), 2)
+
+def calcular_probabilidade_obesidade(avaliacao):
+    return round(random.uniform(0, 100), 2)
+
+def calcular_probabilidade_carie(avaliacao):
+    return round(random.uniform(0, 100), 2)
+
+
+def calcular_probabilidade_alergia(avaliacao):
+    return round(random.uniform(0, 100), 2)
 
 
 class GestanteForms(forms.ModelForm):
@@ -30,9 +36,6 @@ class GestanteForms(forms.ModelForm):
 
         widgets = {
             'nome': forms.TextInput(attrs={'class':'form-control'}),
-            'legenda': forms.TextInput(attrs={'class':'form-control'}),
-            'categoria': forms.Select(attrs={'class':'form-control'}),
-            'descricao': forms.Textarea(attrs={'class':'form-control'}),
             'foto': forms.FileInput(attrs={'class':'form-control'}),
             'data_fotografia': forms.DateInput(
                 format = '%d/%m/%Y',
@@ -41,11 +44,59 @@ class GestanteForms(forms.ModelForm):
                     'class':'form-control'
                 }
             ),
+            'altura': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'step': '0.01',
+                    'inputmode': 'decimal',
+                    'placeholder': 'Digite a altura (ex: 1.58)'
+                }
+            ),
         }
+    
+
+    
+    def clean_altura(self):
+        altura = self.cleaned_data['altura']
+        if isinstance(altura, str):
+            altura = altura.replace(',', '.')
+        try:
+            return float(altura)
+        except ValueError:
+            raise forms.ValidationError("Informe um número válido para a altura (ex: 1,65)")
 
 class AvaliacaoForm(forms.ModelForm):
     class Meta:
         model = Avaliacao
-        exclude = ['gestante', 'probabilidade_asma', 'probabilidade_obesidade', 'probabilidade_carie']
+        exclude = [
+            'gestante',
+            'resultado_asma',
+            'resultado_obesidade',
+            'resultado_carie',
+            'resultado_alergia',
+            'resultado_integralidade_saude',
+        ]
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
 
-   
+        # Chamada das funções simples (você define essas)
+        instance.resultado_asma = {
+            'probabilidade': calcular_probabilidade_asma(instance),
+        }
+
+        instance.resultado_obesidade = {
+            'probabilidade': calcular_probabilidade_obesidade(instance),
+        }
+
+        instance.resultado_carie = {
+            'probabilidade': calcular_probabilidade_carie(instance),
+        }
+
+        instance.resultado_alergia = {
+            'probabilidade': calcular_probabilidade_alergia(instance),
+        }
+
+        if commit:
+            instance.save()
+        return instance
