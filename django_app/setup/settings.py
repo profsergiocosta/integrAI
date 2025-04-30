@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -89,7 +89,18 @@ DATABASES = {
         'PORT': '5432',  # Porta padrão do PostgreSQL
     }
 }
+'''
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',  # Nome do banco de dados (POSTGRES_DB)
+        'USER': 'postgres',  # Usuário do banco de dados (POSTGRES_USER)
+        'PASSWORD': 'postgres',  # Senha do banco de dados (POSTGRES_PASSWORD)
+        'HOST': 'localhost',  # Nome do serviço definido no docker-compose.yml
+        'PORT': '5432',  # Porta padrão do PostgreSQL
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
