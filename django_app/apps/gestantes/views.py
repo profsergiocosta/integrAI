@@ -44,7 +44,39 @@ def gestante(request, gestante_id):
         # Obter a última avaliação associada à gestante
         ultima_avaliacao = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao').first()
 
-        return render(request, 'gestantes/gestante.html', {'gestante':gestante, 'ultima_avaliacao': ultima_avaliacao})
+        def classificar_risco(prob):
+            if prob >= 70:
+                return ("🚨", "text-danger")
+            elif prob >= 31:
+                return ("⚠️", "text-warning")
+            else:
+                return ("✅", "text-success")
+
+        riscos = []
+        if ultima_avaliacao:
+            avaliacoes = {
+                "Asma": ultima_avaliacao.resultado_asma["probabilidade"],
+                "Obesidade": ultima_avaliacao.resultado_obesidade["probabilidade"],
+                "Cárie": ultima_avaliacao.resultado_carie["probabilidade"],
+                "Alergia": ultima_avaliacao.resultado_alergia["probabilidade"],
+            }
+
+            for nome, prob in avaliacoes.items():
+                icone, classe = classificar_risco(prob)
+                riscos.append({
+                    "nome": nome,
+                    "valor": round(prob),
+                    "icone": icone,
+                    "classe": classe
+                })
+
+        context = {
+            "gestante": gestante,
+            "ultima_avaliacao": ultima_avaliacao,
+            "riscos": riscos,
+        }
+
+        return render(request, 'gestantes/gestante.html', context)
 
 def buscar(request):
 

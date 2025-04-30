@@ -72,45 +72,38 @@
         </div>
 
 
-        <!-- Card de Recomendações -->
-        <div class="col-lg-6 col-md-12 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Recomendações por desfecho</h5>
-                    {% if ultima_avaliacao %}
-                        <p class="text-muted">Clique em um dos itens abaixo para visualizar as recomendações geradas a partir da avaliação.</p>
+<!-- Card de Recomendações -->
+<div class="col-lg-6 col-md-12 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <h5 class="card-title">Riscos da Ultima Avaliação</h5>
+            {% if ultima_avaliacao %}
+                <p class="text-muted"></p>
 
-                        <!-- Botões de Riscos -->
-                        <div class="d-flex flex-column gap-3">
-                            <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="btn btn-outline-info py-3">
-                                <i class="fas fa-lungs"></i> Asma
-                            </a>
+                <ul class="list-group text-start">
+                    {% for risco in riscos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ risco.icone }} {{ risco.nome }}</span>
+                            <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
+            {% endif %}
 
-                            <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="btn btn-outline-warning py-3">
-                                <i class="fas fa-weight"></i> Obesidade
-                            </a>
+            <hr class="my-4">
 
-                            <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="btn btn-outline-success py-3">
-                                <i class="fas fa-tooth"></i> Cárie
-                            </a>
-                        </div>
-                    {% else %}
-                        <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
-                    {% endif %}
-
-       
-
-                    <!-- Espaço para separação visual -->
-                    <hr class="my-4">
-
-                    <!-- Botão de Avaliação (Sempre visível) -->
-                    <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
-                    <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
-                        <i class="fas fa-exclamation-triangle"></i> Avaliação
-                    </a>
-                </div>
-            </div>
+            <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
+            <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                <i class="fas fa-exclamation-triangle"></i> Avaliação
+            </a>
         </div>
+    </div>
+</div>
+
+
+        
     </div>
 
     <!-- Botão de Voltar - Centralizado -->
