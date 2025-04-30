@@ -165,8 +165,11 @@ def detalhes_risco(request, gestante_id, risco):
                 return redirect('login')
 
     gestante = get_object_or_404(Gestante, id=gestante_id)
+    
+    ultima_avaliacao = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao').first()
+
     # Lógica para exibir os detalhes do risco
-    return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco})
+    return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco, 'ultima_avaliacao':ultima_avaliacao})
 
 
 def chat(request):
