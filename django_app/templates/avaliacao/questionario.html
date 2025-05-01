@@ -23,16 +23,48 @@
     }
 
     .btn-success {
-        font-size: 1.1rem;  /* Tamanho de fonte padrão */
-        padding: 0.75rem 2rem;  /* Tamanho de padding normal */
+        font-size: 1.3rem;  /* Aumentar o tamanho da fonte */
+        padding: 0.75rem 2rem;
         border-radius: 10px;
+        width: 100%;  /* Garante que o botão ocupe toda a largura */
     }
 
-    /* Garantindo que o botão ocupe a largura completa */
-    .btn-full-width {
-        width: 100%;
+    .question {
+        display: none;
     }
 
+    .question.active {
+        display: block;
+    }
+
+    /* Espaçamento entre os botões */
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+
+    .btn-container .btn {
+        width: 48%; /* Botões terão largura quase igual */
+    }
+
+    /* Empilhar as opções "Sim" e "Não" no mobile */
+    .form-check-inline {
+        display: block; /* Faz as opções ficarem uma abaixo da outra */
+        margin-bottom: 1rem; /* Espaçamento entre as opções */
+    }
+
+    /* Fonte maior para labels no mobile */
+    @media (max-width: 767px) {
+        label.form-label {
+            font-size: 1.2rem; /* Aumenta o tamanho da fonte no mobile */
+        }
+        
+        /* Fonte maior para "Sim" e "Não" */
+        .form-check-label {
+            font-size: 1.2rem; /* Aumenta o tamanho da fonte para as opções de "Sim" e "Não" */
+        }
+    }
 </style>
 
 <div class="container mt-4 px-3">
@@ -44,36 +76,39 @@
         {% csrf_token %}
 
         {% for field in form.visible_fields %}
-        <div class="mb-4">
-            {% if field.field.widget.input_type == 'checkbox' %}
-                <label class="form-label d-block">
-                    <strong>{{ forloop.counter }}.</strong> {{ field.label }}
-                </label>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="{{ field.html_name }}"
-                           value="True" id="{{ field.id_for_label }}_sim"
-                           {% if field.value %}checked{% endif %}>
-                    <label class="form-check-label" for="{{ field.id_for_label }}_sim">Sim</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="{{ field.html_name }}"
-                           value="False" id="{{ field.id_for_label }}_nao"
-                           {% if not field.value %}checked{% endif %}>
-                    <label class="form-check-label" for="{{ field.id_for_label }}_nao">Não</label>
-                </div>
-            {% else %}
-                <label for="{{ field.id_for_label }}" class="form-label">
-                    <strong>{{ forloop.counter }}.</strong> {{ field.label }}
-                </label>
-                <div class="input-group">
-                    {{ field|add_class:"form-control input-mobile" }}
-                </div>
-            {% endif %}
+        <div class="question">
+            <div class="mb-4">
+                {% if field.field.widget.input_type == 'checkbox' %}
+                    <label class="form-label d-block">
+                        <strong>{{ forloop.counter }}.</strong> {{ field.label }}
+                    </label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="{{ field.html_name }}"
+                               value="True" id="{{ field.id_for_label }}_sim"
+                               {% if field.value %}checked{% endif %}>
+                        <label class="form-check-label" for="{{ field.id_for_label }}_sim">Sim</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="{{ field.html_name }}"
+                               value="False" id="{{ field.id_for_label }}_nao"
+                               {% if not field.value %}checked{% endif %}>
+                        <label class="form-check-label" for="{{ field.id_for_label }}_nao">Não</label>
+                    </div>
+                {% else %}
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        <strong>{{ forloop.counter }}.</strong> {{ field.label }}
+                    </label>
+                    <div class="input-group">
+                        {{ field|add_class:"form-control input-mobile" }}
+                    </div>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
 
-        <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-success btn-full-width" id="submitButton">Avaliar</button>
+        <div class="btn-container">
+            <button type="button" class="btn btn-success" id="previousButton" style="display: none;">Anterior</button>
+            <button type="button" class="btn btn-success" id="nextButton">Próximo</button>
         </div>
     </form>
 
@@ -86,13 +121,53 @@
 </div>
 
 <script>
-    document.getElementById('evaluationForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        document.getElementById('submitButton').disabled = true;
-        document.getElementById('loadingMessage').style.display = 'block';
-        setTimeout(function () {
+    let currentQuestionIndex = 0;
+    const questions = document.querySelectorAll('.question');
+    const nextButton = document.getElementById('nextButton');
+    const previousButton = document.getElementById('previousButton');
+
+    // Mostrar a primeira pergunta
+    questions[currentQuestionIndex].classList.add('active');
+
+    // Lidar com o botão "Próximo"
+    nextButton.addEventListener('click', function() {
+        // Ocultar a questão atual
+        questions[currentQuestionIndex].classList.remove('active');
+
+        // Avançar para a próxima questão
+        currentQuestionIndex++;
+
+        // Se houver mais questões, mostre a próxima
+        if (currentQuestionIndex < questions.length) {
+            questions[currentQuestionIndex].classList.add('active');
+            previousButton.style.display = 'block'; // Mostrar o botão "Anterior"
+            nextButton.textContent = "Próximo";  // Em todas as questões intermediárias
+        } else {
+            // Se todas as questões foram respondidas, envie o formulário
+            nextButton.textContent = "Avaliar";  // No final, o botão será "Avaliar"
             document.getElementById('evaluationForm').submit();
-        }, 2000);
+        }
+    });
+
+    // Lidar com o botão "Anterior"
+    previousButton.addEventListener('click', function() {
+        // Ocultar a questão atual
+        questions[currentQuestionIndex].classList.remove('active');
+
+        // Retroceder para a questão anterior
+        currentQuestionIndex--;
+
+        // Se houver mais questões, mostre a anterior
+        if (currentQuestionIndex >= 0) {
+            questions[currentQuestionIndex].classList.add('active');
+        }
+
+        // Se estiver na primeira questão, esconder o botão "Anterior"
+        if (currentQuestionIndex === 0) {
+            previousButton.style.display = 'none';
+        }
+
+        nextButton.textContent = "Próximo";  // Atualiza o texto do botão "Próximo"
     });
 </script>
 {% endblock %}
