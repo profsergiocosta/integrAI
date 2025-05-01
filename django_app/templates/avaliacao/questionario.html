@@ -3,72 +3,63 @@
 {% load custom_filters %}
 
 {% block content %}
-<div class="container mt-5">
-    <h3 class="text-center mb-4">Avaliação de <span class="text-primary">{{ gestante.nome }}</span></h1>
+<div class="container mt-4 px-2">
+    <h4 class="text-center mb-4">
+        Avaliação de <span class="text-primary">{{ gestante.nome }}</span>
+    </h4>
 
-    <div class="text-start">
-        <form method="post" id="evaluationForm">
-            {% csrf_token %}
+    <form method="post" id="evaluationForm">
+        {% csrf_token %}
 
-            {% for field in form.visible_fields %}
-            <div class="mb-3 text-start">
-                {% if field.field.widget.input_type == 'checkbox' %}
-                <!-- Campo booleano (transformado em radio buttons) -->
+        {% for field in form.visible_fields %}
+        <div class="mb-4">
+            {% if field.field.widget.input_type == 'checkbox' %}
+                <!-- Campo booleano como radio -->
                 <label class="form-label d-block">
                     <strong>{{ forloop.counter }}.</strong> {{ field.label }}
                 </label>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="{{ field.html_name }}" value="True" id="{{ field.id_for_label }}_sim"
-                        {% if field.value %}checked{% endif %}>
+                    <input class="form-check-input" type="radio" name="{{ field.html_name }}"
+                           value="True" id="{{ field.id_for_label }}_sim"
+                           {% if field.value %}checked{% endif %}>
                     <label class="form-check-label" for="{{ field.id_for_label }}_sim">Sim</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="{{ field.html_name }}" value="False" id="{{ field.id_for_label }}_nao"
-                        {% if not field.value %}checked{% endif %}>
+                    <input class="form-check-input" type="radio" name="{{ field.html_name }}"
+                           value="False" id="{{ field.id_for_label }}_nao"
+                           {% if not field.value %}checked{% endif %}>
                     <label class="form-check-label" for="{{ field.id_for_label }}_nao">Não</label>
                 </div>
-                {% else %}
-                <!-- Outros campos (inputs, selects, etc.) -->
-                <label for="{{ field.id_for_label }}" class="form-label">
-                    <strong>{{ forloop.counter }}.</strong> {{ field.label }}
-                </label>
-                {{ field|add_class:"form-control" }}
-                {% endif %}
-            </div>
-            {% endfor %}
+            {% else %}
+                <!-- Campo com placeholder dentro da caixa -->
+                {% with attrs="class=form-control form-control-sm,placeholder="|add:field.label %}
+                    {{ field|add_attrs:attrs }}
+                {% endwith %}
+            {% endif %}
+        </div>
+        {% endfor %}
 
-            <div class="d-flex justify-content-center mt-4">
-                <button type="submit" class="btn btn-success px-5 py-2" id="submitButton">Avaliar</button>
-            </div>
-        </form>
+        <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success py-2" id="submitButton">Avaliar</button>
+        </div>
+    </form>
 
-        <!-- Mensagem de carregamento que será exibida durante o processo -->
-        <div id="loadingMessage" class="text-center mt-4" style="display:none;">
-            <p><strong>Avaliando...</strong></p>
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Carregando...</span>
-            </div>
+    <div id="loadingMessage" class="text-center mt-4" style="display: none;">
+        <p><strong>Avaliando...</strong></p>
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Carregando...</span>
         </div>
     </div>
 </div>
 
 <script>
     document.getElementById('evaluationForm').addEventListener('submit', function(event) {
-        event.preventDefault();  // Impede o envio imediato do formulário
-
-        // Desabilitar o botão para evitar múltiplos cliques
+        event.preventDefault();
         document.getElementById('submitButton').disabled = true;
-
-        // Exibir a mensagem de carregamento
         document.getElementById('loadingMessage').style.display = 'block';
-
-        // Simular um delay de 2 segundos antes de submeter o formulário
-        setTimeout(function() {
-            document.getElementById('evaluationForm').submit();  // Agora o formulário é enviado de fato
+        setTimeout(function () {
+            document.getElementById('evaluationForm').submit();
         }, 2000);
     });
 </script>
-
 {% endblock %}
-
-
