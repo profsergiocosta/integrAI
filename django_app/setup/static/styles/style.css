@@ -1,14 +1,10 @@
+/* Estilos globais */
 body {
-    padding-top: 80px; /* Para não sobrepor o cabeçalho */
-    background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
-    font-family: 'Poppins', sans-serif; /* Fonte mais arredondada e moderna */
+    padding-top: 80px;
+    padding-bottom: 50px;
+    background-color: #fff0f5;
+    font-family: 'Poppins', sans-serif;
 }
-
-body {
-    padding-bottom: 50px; /* Espaçamento acima do rodapé */
-}
-
-
 nav {
     background-color: #d6336c; /* Tom mais quente e feminino para o cabeçalho */
 }
@@ -84,10 +80,17 @@ footer {
     transform: scale(1.05);
 }
 
-/* Ajuste para evitar que os botões fiquem muito colados quando há sidebar */
-.main-content {
-    margin-left: 260px; /* Compensa a largura da sidebar */
-    padding: 10px;
+
+
+/* Limita largura no desktop */
+@media (min-width: 992px) {
+    .main-content {
+        max-width: 960px;
+        margin: 0 auto;
+        margin-left: 260px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
 }
 
 @media (max-width: 768px) { /* Ajusta para telas menores */
@@ -108,8 +111,6 @@ footer {
         text-align: center; /* Centraliza os links dentro do menu */
     }
 }
-
-
 
 /* Estilizando a tela de login */
 .login-container {
@@ -193,18 +194,28 @@ select {
     background-color: #ff85a2; /* Rosa suave ao invés de laranja */
 }
 
+/* Conteúdo principal centralizado com espaço lateral */
+.main-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+/* Sidebar */
 .sidebar {
-    background-color: #ffe4e1; /* Rosa claro suave */
-    border-radius: 12px; /* Cantos arredondados */
+    background-color: #ffe4e1;
+    border-radius: 12px;
     padding: 20px;
-    height: 100vh; /* Ocupa toda a altura da tela */
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 240px;
     left: 0;
     top: 0;
     bottom: 0;
+    z-index: 1000;
 }
+
 
 .sidebar-sticky {
     position: sticky;
