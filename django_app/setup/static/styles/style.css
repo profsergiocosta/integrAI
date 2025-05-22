@@ -23,7 +23,7 @@ footer {
 }
 
 .card {
-    cursor: pointer;
+    
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 10px; /* Deixando os cards mais arredondados */
     background-color: #ffe4e1; /* Fundo levemente rosado para mais delicadeza */
