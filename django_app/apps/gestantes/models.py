@@ -3,6 +3,8 @@ from django import forms
 
 from datetime import datetime
 
+from django.utils import timezone
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -105,7 +107,10 @@ class Avaliacao(models.Model):
 
 
     gestante = models.ForeignKey(Gestante, on_delete=models.CASCADE, related_name='questionarios')
-    data_aplicacao = models.DateTimeField(auto_now_add=True)
+    
+    data_aplicacao = models.DateTimeField(verbose_name="Data da Avaliação", default=timezone.now)
+
+
     peso_atual = models.FloatField(
         verbose_name="Peso atual:"
     )
@@ -182,7 +187,8 @@ class Avaliacao(models.Model):
 
     class Meta:
         verbose_name = 'Avaliacao'
-        verbose_name_plural = 'Avaliação'  # Mantém o nome no singular no admin
+        verbose_name_plural = 'Avaliações'
+        ordering = ['gestante', 'data_aplicacao']  # Ordena por gestante e depois data
 
     def __str__(self):
         return f"Questionário de {self.gestante.nome} em {self.data_aplicacao.strftime('%d/%m/%Y')}"
