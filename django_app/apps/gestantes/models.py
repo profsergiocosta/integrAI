@@ -8,6 +8,8 @@ from django.core.exceptions import ValidationError
 
 from django.contrib.postgres.fields import JSONField  # Se estiver usando PostgreSQL
 
+from django.templatetags.static import static
+
 
 class Gestante(models.Model):
 
@@ -52,6 +54,12 @@ class Gestante(models.Model):
         blank=False,
         related_name='user'
     )
+
+    @property
+    def foto_url(self):
+        if self.foto and hasattr(self.foto, 'url'):
+            return self.foto.url
+        return static('assets/imagens/gestante/silhueta.png')
 
     @property
     def imc(self):
