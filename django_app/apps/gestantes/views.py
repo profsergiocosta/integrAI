@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 
+import json
+
 from apps.gestantes.models import Gestante, Avaliacao
 
 from apps.gestantes.forms import GestanteForms, AvaliacaoForm
@@ -262,3 +264,44 @@ def chat(request):
                 return redirect('login')
 
     return render(request, 'avaliacao/chat.html')
+
+
+# views.py
+from django.shortcuts import get_object_or_404, render
+from .models import Gestante, Avaliacao
+
+def evolucao_riscos_gestante(request, gestante_id):
+    gestante = get_object_or_404(Gestante, id=gestante_id, usuario=request.user)
+
+    avaliacoes = Avaliacao.objects.filter(
+        gestante=gestante
+    ).order_by('data_aplicacao')
+
+    # Extração dos dados
+    datas = []
+    asma = []
+    obesidade = []
+    carie = []
+    alergia = []
+    integralidade = []
+
+    for av in avaliacoes:
+        data_str = av.data_aplicacao.strftime('%d/%m/%Y')
+        datas.append(data_str)
+
+        asma.append({"x": data_str, "y": av.resultado_asma.get('probabilidade', 0) if av.resultado_asma else 0})
+        obesidade.append({"x": data_str, "y": av.resultado_obesidade.get('probabilidade', 0) if av.resultado_obesidade else 0})
+        carie.append({"x": data_str, "y": av.resultado_carie.get('probabilidade', 0) if av.resultado_carie else 0})
+        alergia.append({"x": data_str, "y": av.resultado_alergia.get('probabilidade', 0) if av.resultado_alergia else 0})
+        integralidade.append({"x": data_str, "y": av.resultado_integralidade_saude.get('probabilidade', 0) if av.resultado_integralidade_saude else 0})
+
+    contexto = {
+        'gestante': gestante,
+        'asma': json.dumps(asma),
+        'obesidade': json.dumps(obesidade),
+        'carie': json.dumps(carie),
+        'alergia': json.dumps(alergia),
+        'integralidade': json.dumps(integralidade),
+    }
+    print (contexto)
+    return render(request, 'gestantes/evolucao_riscos.html', contexto)

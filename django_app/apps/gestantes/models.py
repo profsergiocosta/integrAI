@@ -88,7 +88,7 @@ class Gestante(models.Model):
             raise ValidationError("A altura deve estar entre 1.0 e 2.5 metros.")
 
     def __str__(self):
-        return f"{self.nome} (Idade: {self.idade})"
+        return f"{self.nome} (ID: {self.id})"
 
     class Meta:
         ordering = ['-data_cadastro']
