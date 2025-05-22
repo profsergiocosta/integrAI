@@ -53,8 +53,8 @@
                     {% endif %}
 
                     
-                    <!-- Botões de Ação (Alterar e Excluir) -->
-                    <div class="d-flex flex-wrap justify-content-center">
+                        <!-- Botões de Ação (Alterar e Excluir) -->
+                        <div class="d-flex flex-wrap justify-content-center">
                         <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2 mr-3">
                             <i class="fas fa-edit"></i> Atualizar
                         </a>
@@ -65,6 +65,13 @@
                         </button>
                         </div>
 
+                        <hr class="my-4">
+
+                        <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
+                        <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                            <i class="fas fa-exclamation-triangle"></i> Avaliação
+                        </a>
+            
 
 
                 </div>
@@ -161,12 +168,6 @@
  
 
 
-            <hr class="my-4">
-
-            <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
-            <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
-                <i class="fas fa-exclamation-triangle"></i> Avaliação
-            </a>
 
 
  

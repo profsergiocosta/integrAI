@@ -80,6 +80,7 @@ class AvaliacaoForm(forms.ModelForm):
             'resultado_carie',
             'resultado_alergia',
             'resultado_integralidade_saude',
+            'data_aplicacao'
         ]
     
     def save(self, commit=True):
