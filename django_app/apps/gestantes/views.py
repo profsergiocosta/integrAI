@@ -7,7 +7,7 @@ from apps.gestantes.models import Gestante, Avaliacao
 from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 
 
-
+from django.db.models import OuterRef, Subquery, DateField
 
 
 def index(request):
@@ -28,9 +28,19 @@ def lista_gestantes(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não logado')
         return redirect('login')
+    
+    ultima_avaliacao_subquery = Avaliacao.objects.filter(
+        gestante=OuterRef('pk')
+    ).order_by('-data_aplicacao').values('data_aplicacao')[:1]
+
 
     # Filtra as gestantes pelo usuário logado
-    gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+    # Filtra pelo usuário e anota a data da última avaliação
+    gestantes = Gestante.objects.filter(
+        usuario=request.user
+    ).annotate(
+        ultima_avaliacao=Subquery(ultima_avaliacao_subquery, output_field=DateField())
+    ).order_by('-data_cadastro')
 
     return render(request, 'gestantes/lista_gestantes.html', {"cards": gestantes})
 

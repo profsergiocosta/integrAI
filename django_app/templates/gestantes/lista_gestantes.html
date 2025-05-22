@@ -2,8 +2,10 @@
 {% load static %}
 {% block content %}
 
-<div class="row mb-4">
-    <div class="col-12">
+
+<!-- Filtro de busca -->
+<div class="row">
+    <div class="col-12 mb-4" style="padding: 10px">
         <form action="{% url 'buscar' %}" method="GET" class="form-inline">
             <div class="input-group">
                 <input type="text" name="buscar" placeholder="Buscar gestante..." class="form-control" required>
@@ -15,41 +17,46 @@
     </div>
 </div>
 
-{% if cards %}
+<!-- Tabela de gestantes -->
 <div class="row">
-    {% for gestante in cards %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            {% if gestante.foto %}
-            <img src="{{ gestante.foto.url }}" class="card-img-top" alt="Foto de {{ gestante.nome }}" style="height: 250px; object-fit: cover;">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ gestante.nome }}</h5>
-                <p class="card-text mb-1"><strong>Idade:</strong> {{ gestante.idade }} anos</p>
-                <p class="card-text mb-1"><strong>IMC:</strong> {{ gestante.imc }} ({{ gestante.imc_classificacao }})</p>
-                {% if gestante.questionarios.last %}
-                    <p class="card-text text-muted"><small>Última avaliação: {{ gestante.questionarios.last.data_aplicacao|date:"d/m/Y" }}</small></p>
-                {% else %}
-                    <p class="card-text text-muted"><small>Sem avaliações registradas</small></p>
-                {% endif %}
-            </div>
-            <div class="card-footer bg-white">
-                <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary btn-sm">Detalhes</a>
-                <a href="" class="btn btn-outline-success btn-sm">+ Avaliação</a>
-                {% if gestante.telefone %}
-                <a href="https://wa.me/55{{ gestante.telefone|default_if_none:""|cut:" "|cut:"-"|cut:"("|cut:")" }}?text={{ mensagem_padrao|urlencode }}" target="_blank" class="btn btn-outline-dark btn-sm">
-                    <i class="fab fa-whatsapp"></i> Enviar
-                </a>
-                {% endif %}
-            </div>
+    <div class="col-12 mb-4">
+        {% if cards %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Idade</th>
+                    <th scope="col">Última Avaliação</th>
+                    <th scope="col">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gestante in cards %}
+                <tr onclick="window.location.href='{% url 'gestante' gestante.id %}';">
+                    <td>{{ gestante.nome }}</td>
+                    <td>{{ gestante.idade }}</td>
+
+                    <td>
+                        {% if gestante.ultima_avaliacao %}
+                            {{ gestante.ultima_avaliacao|date:"d/m/Y" }}
+                        {% else %}
+                            <span class="text-muted">Não avaliada</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary">Detalhes</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="imagem__texto">
+            <p>Ainda não tem gestante cadastrada</p>
         </div>
+        {% endif %}
     </div>
-    {% endfor %}
 </div>
-{% else %}
-    <div class="text-center">
-        <p class="text-muted">Ainda não há gestantes cadastradas.</p>
-    </div>
-{% endif %}
 
 {% endblock %}
