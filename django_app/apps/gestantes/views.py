@@ -56,6 +56,7 @@ def gestante(request, gestante_id):
 
     if ultima_avaliacao:
         aval_ultima = {
+            "Integralidade": ultima_avaliacao.resultado_integralidade_saude["probabilidade"],
             "Asma": ultima_avaliacao.resultado_asma["probabilidade"],
             "Obesidade": ultima_avaliacao.resultado_obesidade["probabilidade"],
             "Cárie": ultima_avaliacao.resultado_carie["probabilidade"],
@@ -73,6 +74,7 @@ def gestante(request, gestante_id):
 
         if penultima_avaliacao:
             aval_penultima = {
+                "Integralidade": ultima_avaliacao.resultado_integralidade_saude["probabilidade"],
                 "Asma": penultima_avaliacao.resultado_asma["probabilidade"],
                 "Obesidade": penultima_avaliacao.resultado_obesidade["probabilidade"],
                 "Cárie": penultima_avaliacao.resultado_carie["probabilidade"],

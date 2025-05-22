@@ -7,6 +7,8 @@ from django.utils.safestring import mark_safe
 
 import random
 
+
+## aqui irá entrar os modelos
 # Funções para calcular as probabilidades
 def calcular_probabilidade_asma(avaliacao):
     return round(random.uniform(0, 100), 2)
@@ -19,6 +21,9 @@ def calcular_probabilidade_carie(avaliacao):
 
 
 def calcular_probabilidade_alergia(avaliacao):
+    return round(random.uniform(0, 100), 2)
+
+def calcular_probabilidade_integralidade(avaliacao):
     return round(random.uniform(0, 100), 2)
 
 
@@ -95,6 +100,10 @@ class AvaliacaoForm(forms.ModelForm):
 
         instance.resultado_alergia = {
             'probabilidade': calcular_probabilidade_alergia(instance),
+        }
+
+        instance.resultado_integralidade_saude = {
+            'probabilidade': calcular_probabilidade_integralidade(instance),
         }
 
         if commit:
