@@ -19,7 +19,9 @@ def index(request):
             # Filtra as gestantes pelo usuário logado
         gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
 
-        return render(request, 'gestantes/index.html', {"cards":gestantes})
+        show_welcome = request.session.pop('show_welcome', False)
+
+        return render(request, 'gestantes/index.html', {"cards":gestantes, "show_welcome": show_welcome})
         
 
 def lista_gestantes(request):

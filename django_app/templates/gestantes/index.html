@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 
+{% if show_welcome %}
 <!-- Modal de Boas-Vindas -->
 <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -18,7 +19,7 @@
             </div>
             <div class="modal-footer">
                 <a href="{% url 'lista_gestantes' %}" class="btn btn-primary">Fechar</a>
-                <a href="" class="btn btn-primary">Avançar para o Tutorial</a>
+                
             </div>
         </div>
     </div>
@@ -30,13 +31,15 @@
         var myModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
         myModal.show();
 
-        // Adicionando um evento de fechamento para redirecionar para a página lista_gestantes
         var closeButton = document.getElementById('closeModalButton');
-        closeButton.addEventListener('click', function() {
-            window.location.href = "{% url 'lista_gestantes' %}";
-        });
+        if (closeButton) {
+            closeButton.addEventListener('click', function () {
+                window.location.href = "{% url 'lista_gestantes' %}";
+            });
+        }
     };
 </script>
+{% endif %}
 
 <!-- Filtro de busca -->
 <div class="row">
