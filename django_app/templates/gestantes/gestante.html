@@ -80,26 +80,61 @@
                 <h5 class="card-title">Evolução dos Riscos</h5>
                 <p class="text-muted">Comparativo entre as duas últimas avaliações:</p>
 
-                <ul class="list-group text-start">
-                    {% for risco in evolucao_riscos %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{{ risco.direcao }} {{ risco.nome }}: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}</span>
-                            <span class="{{ risco.classe }}"></span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% if evolucao_riscos %}
+                    <!-- Primeiro risco em destaque -->
+                    <strong>Risco Combinado  para Doenças Crônicas na Infância</strong>
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            {{ evolucao_riscos.0.direcao }} {{ evolucao_riscos.0.nome }}:
+                            {{ evolucao_riscos.0.seta }} {{ evolucao_riscos.0.anterior }}% → {{ evolucao_riscos.0.atual }}% {{ evolucao_riscos.0.icone }}
+                        </div>
+                        <div class="{{ evolucao_riscos.0.classe }}"></div>
+                    </div>
+
+                    <!-- Lista com os demais riscos -->
+                    {% if evolucao_riscos|length > 1 %}
+                    <strong> Riscos por doença </strong>
+                        <ul class="list-group text-start">
+                            {% for risco in evolucao_riscos|slice:"1:" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ risco.direcao }} {{ risco.nome }}: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}</span>
+                                    <span class="{{ risco.classe }}"></span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endif %}
+
             {% elif ultima_avaliacao %}
                 <h5 class="card-title">Riscos da Última Avaliação</h5>
                 <p class="text-muted">Resumo dos riscos identificados:</p>
 
-                <ul class="list-group text-start">
-                    {% for risco in riscos %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{{ risco.icone }} {{ risco.nome }}</span>
-                            <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% if riscos %}
+                    <!-- Primeiro risco em evidência -->
+                    <strong>Risco Combinado  para Doenças Crônicas na Infância</strong>
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                         {{ riscos.0.icone }} {{ riscos.0.nome }}
+                        </div>
+                        <div class="{{ riscos.0.classe }}">
+                            <strong>{{ riscos.0.valor }}%</strong>
+                        </div>
+                    </div>
+
+                    <!-- Lista com os demais riscos -->
+                    {% if riscos|length > 1 %}
+                        <strong> Riscos por doença </strong>
+                        <ul class="list-group text-start">
+                            {% for risco in riscos|slice:"1:" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ risco.icone }} {{ risco.nome }}</span>
+                                    <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endif %}
+
             {% else %}
                 <h5 class="card-title">Sem Avaliações</h5>
                 <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
@@ -114,6 +149,7 @@
         </div>
     </div>
 </div>
+
 
 
 
