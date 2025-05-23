@@ -83,7 +83,8 @@
         </div>
 
 
-<!-- Card de Recomendações -->
+<!-- Card de Riscos -->
+
 <div class="col-lg-6 col-md-12 mb-4">
     <div class="card shadow-sm">
         <div class="card-body text-center">
@@ -93,22 +94,34 @@
 
                 {% if evolucao_riscos %}
                     <!-- Primeiro risco em destaque -->
-                    <strong>Risco Combinado  para Doenças Crônicas na Infância</strong>
+                    <strong>
+                        <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.nome %}" class="text-dark text-decoration-none">
+                            Risco Combinado para Doenças Crônicas na Infância
+                        </a>
+                    </strong>
                     <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            {{ evolucao_riscos.0.direcao }} {{ evolucao_riscos.0.nome }}:
+                            {{ evolucao_riscos.0.direcao }}
+                            <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.nome %}" class="text-dark text-decoration-none">
+                                {{ evolucao_riscos.0.nome }}
+                            </a>:
                             {{ evolucao_riscos.0.seta }} {{ evolucao_riscos.0.anterior }}% → {{ evolucao_riscos.0.atual }}% {{ evolucao_riscos.0.icone }}
                         </div>
                         <div class="{{ evolucao_riscos.0.classe }}"></div>
                     </div>
 
-                    <!-- Lista com os demais riscos -->
                     {% if evolucao_riscos|length > 1 %}
-                    <strong> Riscos por doença </strong>
+                        <strong> Riscos por doença </strong>
                         <ul class="list-group text-start">
                             {% for risco in evolucao_riscos|slice:"1:" %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>{{ risco.direcao }} {{ risco.nome }}: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}</span>
+                                    <span>
+                                        {{ risco.direcao }}
+                                        <a href="{% url 'detalhes_risco' gestante.id risco.nome %}" class="text-dark text-decoration-none">
+                                            {{ risco.nome }}
+                                        </a>:
+                                        {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}
+                                    </span>
                                     <span class="{{ risco.classe }}"></span>
                                 </li>
                             {% endfor %}
@@ -131,23 +144,33 @@
 
                 {% if riscos %}
                     <!-- Primeiro risco em evidência -->
-                    <strong>Risco Combinado  para Doenças Crônicas na Infância</strong>
+                    <strong>
+                        <a href="{% url 'detalhes_risco' gestante.id riscos.0.nome %}" class="text-dark text-decoration-none">
+                            Risco Combinado para Doenças Crônicas na Infância
+                        </a>
+                    </strong>
                     <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
                         <div>
-                         {{ riscos.0.icone }} {{ riscos.0.nome }}
+                            {{ riscos.0.icone }}
+                            <a href="{% url 'detalhes_risco' gestante.id riscos.0.nome %}" class="text-dark text-decoration-none">
+                                {{ riscos.0.nome }}
+                            </a>
                         </div>
                         <div class="{{ riscos.0.classe }}">
                             <strong>{{ riscos.0.valor }}%</strong>
                         </div>
                     </div>
 
-                    <!-- Lista com os demais riscos -->
                     {% if riscos|length > 1 %}
                         <strong> Riscos por doença </strong>
                         <ul class="list-group text-start">
                             {% for risco in riscos|slice:"1:" %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>{{ risco.icone }} {{ risco.nome }}</span>
+                                    <span>
+                                        <a href="{% url 'detalhes_risco' gestante.id risco.nome %}" class="text-dark text-decoration-none">
+                                            {{ risco.icone }} {{ risco.nome }}
+                                        </a>
+                                    </span>
                                     <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
                                 </li>
                             {% endfor %}
@@ -155,37 +178,23 @@
                     {% endif %}
                 {% endif %}
 
-            <hr class="my-4">
+                <hr class="my-4">
 
-            <p class="text-muted">
-                Clique para visualizar um gráfico <strong>detalhado</strong> com a evolução dos riscos durante a gestação.
-            </p>
-            <a href="{% url 'evolucao_riscos' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
-                <i class="fas fa-exclamation-triangle"></i> Evolução dos riscos
-            </a>
+                <p class="text-muted">
+                    Clique para visualizar um gráfico <strong>detalhado</strong> com a evolução dos riscos durante a gestação.
+                </p>
+                <a href="{% url 'evolucao_riscos' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                    <i class="fas fa-exclamation-triangle"></i> Evolução dos riscos
+                </a>
 
             {% else %}
                 <h5 class="card-title">Sem Avaliações</h5>
                 <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
             {% endif %}
-
- 
-
-
-
-
- 
-
-
         </div>
     </div>
 </div>
 
-
-
-
-        
-    </div>
 
 
 
