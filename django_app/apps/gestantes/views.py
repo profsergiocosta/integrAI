@@ -308,3 +308,39 @@ def evolucao_riscos_gestante(request, gestante_id):
     }
     print (contexto)
     return render(request, 'gestantes/evolucao_riscos.html', contexto)
+
+
+
+
+def timeline_orientacoes(request, gestante_id):
+    # dados estáticos de exemplo
+    mensagens = [
+        {
+            "gestante_id": 1,
+            "nome": "Maria",
+            "tipo": "orientacao",
+            "mensagem": """Que tal usar o WhatsApp para fortalecer o vínculo com as gestantes? 
+**Envie uma mensagem semanal** com dicas práticas:
+
+- *"Oi, Maria! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"*
+- *"Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"*
+- - *"Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"*""",
+            "data": "2025-05-22"
+        },
+        {
+            "gestante_id": 1,
+            "nome": "Maria",
+            "tipo": "dica",
+            "mensagem": """Inclua sempre uma pergunta no final das mensagens, como 
+*"O que achou da dica?"*, para estimular a interação.
+
+✊ **Você faz a diferença!** Cada orientação simples pode transformar realidades. Vamos juntos?""",
+            "data": "2025-05-22"
+        }
+    ]
+
+    # filtra as mensagens pela gestante_id
+    orientacoes = [m for m in mensagens if m['gestante_id'] == gestante_id]
+
+    context = {"orientacoes": orientacoes, "gestante_id": gestante_id}
+    return render(request, "gestantes/feed.html", context)

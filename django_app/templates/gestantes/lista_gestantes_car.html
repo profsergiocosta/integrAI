@@ -35,12 +35,8 @@
             </div>
             <div class="card-footer bg-white">
                 <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary btn-sm">Detalhes</a>
-                <a href="" class="btn btn-outline-success btn-sm">+ Avaliação</a>
-                {% if gestante.telefone %}
-                <a href="https://wa.me/55{{ gestante.telefone|default_if_none:""|cut:" "|cut:"-"|cut:"("|cut:")" }}?text={{ mensagem_padrao|urlencode }}" target="_blank" class="btn btn-outline-dark btn-sm">
-                    <i class="fab fa-whatsapp"></i> Enviar
-                </a>
-                {% endif %}
+                <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info btn-sm">Feed</a>
+                <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-success btn-sm">+ Avaliação</a>
             </div>
         </div>
     </div>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+
+
+<!-- Feed dinâmico de orientações e dicas -->
+<div class="col-lg-12 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">Feed da Gestante {{ gestante.nome }}</h5>
+
+            {% if orientacoes %}
+                <ul class="list-group">
+                    {% for item in orientacoes %}
+                        <li class="list-group-item mb-3 p-3 
+                            {% if item.tipo == 'orientacao' %}border-start border-4 border-primary{% elif item.tipo == 'dica' %}border-start border-4 border-success{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>{{ item.tipo|title }}</strong>
+                                <small class="text-muted">{{ item.data }}</small>
+                            </div>
+                            <div>
+                                {{ item.mensagem|linebreaksbr|safe }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted text-center">Nenhuma orientação ou dica disponível para esta gestante.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
