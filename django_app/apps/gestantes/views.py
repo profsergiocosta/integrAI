@@ -142,7 +142,9 @@ def buscar(request):
                 messages.error(request, 'Usuário não logado')
                 return redirect('login')
 
-        gestantes = Gestante.objects.order_by("data_cadastro")
+        # Filtra as gestantes que pertencem ao usuário logado
+        gestantes = Gestante.objects.filter(usuario=request.user).order_by("data_cadastro")
+
 
         if "buscar" in request.GET:
                 nome_a_buscar = request.GET['buscar']
