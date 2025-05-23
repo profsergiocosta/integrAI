@@ -53,6 +53,10 @@
                     {% endif %}
 
                     
+                    <p class="card-text">
+                        <strong>Última Avaliação:</strong> {{ ultima_avaliacao.data_aplicacao|date:"d/m/Y" }}
+                    </p>
+
                         <!-- Botões de Ação (Alterar e Excluir) -->
                         <div class="d-flex flex-wrap justify-content-center">
                         <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2 mr-3">
@@ -183,17 +187,7 @@
         
     </div>
 
-    <!-- Botão de Voltar - Centralizado -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fas fa-arrow-left"></i> Voltar
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal de Confirmação -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
