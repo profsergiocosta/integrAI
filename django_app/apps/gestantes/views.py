@@ -319,6 +319,10 @@ from datetime import datetime
 
 from .models import Gestante  # se já tiver o modelo Gestante
 
+from datetime import datetime
+from django.shortcuts import render, get_object_or_404
+from .models import Gestante
+
 def feed_gestante(request, id):
     gestante = get_object_or_404(Gestante, id=id)
 
@@ -334,6 +338,19 @@ def feed_gestante(request, id):
 - "Oi, [Nome]! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"
 - "Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"
 - "Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"
+"""
+        },
+        {
+            "gestante": gestante,
+            "data": datetime(2025, 5, 23, 15, 00),
+            "tipo": "orientacao",
+            "conteudo": """Os ultraprocessados (como biscoitos, salgadinhos, refrigerantes) têm alta densidade calórica, excesso de açúcares, gorduras e aditivos químicos, mas são pobres em nutrientes. Esses produtos estimulam o consumo excessivo, desequilibram o metabolismo e aumentam o risco de obesidade. Durante os primeiros 1000 dias (gestação + primeiros 2 anos da criança), o consumo materno influencia a programação metabólica do bebê, impactando seu peso futuro.
+
+**Como transmitir à gestante de forma clara e acolhedora:**
+
+- **Abordagem prática:** Sugira substituições simples: *"Dona Maria, que tal trocar o pacote de bolacha por uma fruta ou um cuscuz com ovo? É mais nutritivo e protege você e o bebê."*
+- **Explicação técnica simplificada:** *"Esses alimentos industrializados enganam a fome rápido, mas não alimentam de verdade. Com o tempo, podem fazer o corpo acumular mais gordura, até para o bebê."*
+- **Dica de rotina:** Oriente ler rótulos: *"Se a lista tem nomes difíceis, como ‘xarope de glicose’ ou ‘gordura vegetal hidrogenada’, é melhor evitar."*
 """
         },
         {

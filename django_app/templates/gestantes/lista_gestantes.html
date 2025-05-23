@@ -56,7 +56,8 @@
                     </td>
 
                     <td>
-                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary">Detalhes</a>
+                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary btn-sm">Detalhes</a>
+                        <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info btn-sm">Feed</a>
                     </td>
                 </tr>
                 {% endfor %}
