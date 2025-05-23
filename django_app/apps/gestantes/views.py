@@ -314,35 +314,39 @@ def evolucao_riscos_gestante(request, gestante_id):
 
 
 
-def timeline_orientacoes(request, gestante_id):
-    # dados estáticos de exemplo
-    mensagens = [
+from django.shortcuts import render, get_object_or_404
+from datetime import datetime
+
+from .models import Gestante  # se já tiver o modelo Gestante
+
+def feed_gestante(request, id):
+    gestante = get_object_or_404(Gestante, id=id)
+
+    # Simulação com valores estáticos
+    feed = [
         {
-            "gestante_id": 1,
-            "nome": "Maria",
+            "gestante": gestante,
+            "data": datetime(2025, 5, 23, 14, 30),
             "tipo": "orientacao",
-            "mensagem": """Que tal usar o WhatsApp para fortalecer o vínculo com as gestantes? 
+            "conteudo": """Que tal usar o WhatsApp para fortalecer o vínculo com as gestantes?
 **Envie uma mensagem semanal** com dicas práticas:
 
-- *"Oi, Maria! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"*
-- *"Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"*
-- - *"Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"*""",
-            "data": "2025-05-22"
+- "Oi, [Nome]! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"
+- "Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"
+- "Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"
+"""
         },
         {
-            "gestante_id": 1,
-            "nome": "Maria",
+            "gestante": gestante,
+            "data": datetime(2025, 5, 22, 10, 15),
             "tipo": "dica",
-            "mensagem": """Inclua sempre uma pergunta no final das mensagens, como 
-*"O que achou da dica?"*, para estimular a interação.
+            "conteudo": """Inclua sempre uma pergunta no final das mensagens, como *"O que achou da dica?"*, para estimular a interação. Isso cria confiança e ajuda a identificar necessidades específicas!
 
-✊ **Você faz a diferença!** Cada orientação simples pode transformar realidades. Vamos juntos?""",
-            "data": "2025-05-22"
-        }
+✊ **Você faz a diferença!** Cada orientação simples pode transformar realidades. Vamos juntos?"""
+        },
     ]
 
-    # filtra as mensagens pela gestante_id
-    orientacoes = [m for m in mensagens if m['gestante_id'] == gestante_id]
-
-    context = {"orientacoes": orientacoes, "gestante_id": gestante_id}
-    return render(request, "gestantes/feed.html", context)
+    return render(request, 'gestantes/feed.html', {
+        'gestante': gestante,
+        'feed': feed
+    })

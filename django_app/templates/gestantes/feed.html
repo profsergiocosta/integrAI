@@ -1,36 +1,59 @@
 {% extends 'base.html' %}
-{% load custom_filters %}
 {% load static %}
-
 {% block content %}
 
+<div class="container mt-4">
 
-<!-- Feed dinâmico de orientações e dicas -->
-<div class="col-lg-12 mb-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h5 class="card-title text-center mb-4">Feed da Gestante {{ gestante.nome }}</h5>
-
-            {% if orientacoes %}
-                <ul class="list-group">
-                    {% for item in orientacoes %}
-                        <li class="list-group-item mb-3 p-3 
-                            {% if item.tipo == 'orientacao' %}border-start border-4 border-primary{% elif item.tipo == 'dica' %}border-start border-4 border-success{% endif %}">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong>{{ item.tipo|title }}</strong>
-                                <small class="text-muted">{{ item.data }}</small>
-                            </div>
-                            <div>
-                                {{ item.mensagem|linebreaksbr|safe }}
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted text-center">Nenhuma orientação ou dica disponível para esta gestante.</p>
-            {% endif %}
+    <!-- Cabeçalho da Gestante -->
+    <div class="d-flex align-items-center mb-4">
+        <img src="{% if gestante.foto %}{{ gestante.foto.url }}{% else %}{% static 'assets/imagens/gestante/silhueta.png' %}{% endif %}"
+             class="rounded-circle me-3"
+             width="60" height="60"
+             alt="Foto da gestante">
+        <div>
+            <h5 class="mb-0"><strong>{{ gestante.nome }}</strong></h5>
+            <small class="text-muted">Feed personalizado</small>
         </div>
     </div>
+
+    <!-- Publicações do Feed -->
+    {% for item in feed %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="text-muted">{{ item.tipo|title }}</h6>
+                    <small class="text-muted">{{ item.data|date:"d/m/Y H:i" }}</small>
+                </div>
+                <p class="card-text mt-2">{{ item.conteudo|linebreaksbr }}</p>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-end">
+                {% with mensagem_padrao=item.conteudo|striptags|truncatechars:120 %}
+                {% if gestante.telefone %}
+                    <a href="https://wa.me/55{{ gestante.telefone|default_if_none:''|cut:' '|cut:'-'|cut:'('|cut:')' }}?text={{ mensagem_padrao|urlencode }}"
+                       target="_blank"
+                       class="btn btn-success btn-sm d-inline-flex align-items-center"
+                       style="background-color: #25D366; border-color: #25D366;">
+                        <i class="fab fa-whatsapp me-1"></i> Enviar no Whatsapp
+                    </a>
+                {% else %}
+                    <a href="https://wa.me/?text={{ mensagem_padrao|urlencode }}"
+                       target="_blank"
+                       class="btn btn-success btn-sm d-inline-flex align-items-center"
+                       style="background-color: #25D366; border-color: #25D366;">
+                        <i class="fab fa-whatsapp me-1"></i> Enviar no Whatsapp
+                    </a>
+                {% endif %}
+            {% endwith %}
+
+     
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">
+            Nenhuma publicação no feed ainda.
+        </div>
+    {% endfor %}
+
 </div>
 
 {% endblock %}
