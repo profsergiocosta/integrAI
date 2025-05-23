@@ -94,22 +94,21 @@
 
                 {% if evolucao_riscos %}
                     <!-- Primeiro risco em destaque -->
-                    <strong>
-                        <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.nome %}" class="text-dark text-decoration-none">
+                    <strong>                        
                             Risco Combinado para Doenças Crônicas na Infância
-                        </a>
                     </strong>
                     <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            {{ evolucao_riscos.0.direcao }}
-                            <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.nome %}" class="text-dark text-decoration-none">
+                            {{ evolucao_riscos.0.direcao }} 
+                            <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.slug %}" class="text-decoration-none fw-bold">
                                 {{ evolucao_riscos.0.nome }}
-                            </a>:
-                            {{ evolucao_riscos.0.seta }} {{ evolucao_riscos.0.anterior }}% → {{ evolucao_riscos.0.atual }}% {{ evolucao_riscos.0.icone }}
+                            </a>: {{ evolucao_riscos.0.seta }} 
+                            {{ evolucao_riscos.0.anterior }}% → {{ evolucao_riscos.0.atual }}% {{ evolucao_riscos.0.icone }}
                         </div>
                         <div class="{{ evolucao_riscos.0.classe }}"></div>
                     </div>
 
+                    <!-- Lista com os demais riscos -->
                     {% if evolucao_riscos|length > 1 %}
                         <strong> Riscos por doença </strong>
                         <ul class="list-group text-start">
@@ -117,10 +116,9 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>
                                         {{ risco.direcao }}
-                                        <a href="{% url 'detalhes_risco' gestante.id risco.nome %}" class="text-dark text-decoration-none">
+                                        <a href="{% url 'detalhes_risco' gestante.id risco.slug %}" class="text-decoration-none fw-bold">
                                             {{ risco.nome }}
-                                        </a>:
-                                        {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}
+                                        </a>: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}
                                     </span>
                                     <span class="{{ risco.classe }}"></span>
                                 </li>
@@ -145,14 +143,14 @@
                 {% if riscos %}
                     <!-- Primeiro risco em evidência -->
                     <strong>
-                        <a href="{% url 'detalhes_risco' gestante.id riscos.0.nome %}" class="text-dark text-decoration-none">
+                        <a href="{% url 'detalhes_risco' gestante.id riscos.0.slug %}" class="text-decoration-none">
                             Risco Combinado para Doenças Crônicas na Infância
                         </a>
                     </strong>
                     <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            {{ riscos.0.icone }}
-                            <a href="{% url 'detalhes_risco' gestante.id riscos.0.nome %}" class="text-dark text-decoration-none">
+                            {{ riscos.0.icone }} 
+                            <a href="{% url 'detalhes_risco' gestante.id riscos.0.slug %}" class="text-decoration-none fw-bold">
                                 {{ riscos.0.nome }}
                             </a>
                         </div>
@@ -161,16 +159,15 @@
                         </div>
                     </div>
 
+                    <!-- Lista com os demais riscos -->
                     {% if riscos|length > 1 %}
                         <strong> Riscos por doença </strong>
                         <ul class="list-group text-start">
                             {% for risco in riscos|slice:"1:" %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>
-                                        <a href="{% url 'detalhes_risco' gestante.id risco.nome %}" class="text-dark text-decoration-none">
-                                            {{ risco.icone }} {{ risco.nome }}
-                                        </a>
-                                    </span>
+                                    <a href="{% url 'detalhes_risco' gestante.id risco.slug %}" class="text-decoration-none">
+                                        {{ risco.icone }} {{ risco.nome }}
+                                    </a>
                                     <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
                                 </li>
                             {% endfor %}
@@ -194,6 +191,7 @@
         </div>
     </div>
 </div>
+
 
 
 

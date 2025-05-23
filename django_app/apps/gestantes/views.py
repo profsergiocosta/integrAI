@@ -10,6 +10,7 @@ from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 
 
 from django.db.models import OuterRef, Subquery, DateField
+from django.utils.text import slugify
 
 
 def index(request):
@@ -83,7 +84,8 @@ def gestante(request, gestante_id):
                 "nome": nome,
                 "valor": round(prob),
                 "icone": icone,
-                "classe": classe
+                "classe": classe,
+                "slug": slugify(nome)  # cria o slug aqui
             })
 
         if penultima_avaliacao:
@@ -118,7 +120,8 @@ def gestante(request, gestante_id):
                     "anterior": round(anterior),
                     "atual": round(atual),
                     "icone": icone_atual,
-                    "classe": classe
+                    "classe": classe,
+                     "slug": slugify(nome)  # cria o slug aqui
                 })
 
     context = {
@@ -244,7 +247,7 @@ def avaliacao(request, gestante_id):
 
     return render(request, 'avaliacao/questionario.html', {'form': form, 'gestante': gestante})
 
-
+## teria que atualizar o modelo do Risco para usar slug
 def detalhes_risco(request, gestante_id, risco):
     if not request.user.is_authenticated:
                 messages.error(request, 'Usuário não logado')

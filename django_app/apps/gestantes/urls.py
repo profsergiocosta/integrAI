@@ -18,6 +18,7 @@ urlpatterns = [
         path('editar-gestante/<int:gestante_id>', editar_gestante, name='editar_gestante'),
         path('deletar-gestante/<int:gestante_id>', deletar_gestante, name='deletar_gestante'),
         path('gestante/<int:gestante_id>/risco/<str:risco>/', detalhes_risco, name='detalhes_risco'),
+        #path('gestante/<int:gestante_id>/risco/<slug:slug>/', detalhes_risco, name='detalhes_risco'),
 
         path('gestante/<int:gestante_id>/evolucao_riscos/', evolucao_riscos_gestante, name='evolucao_riscos'),
 
