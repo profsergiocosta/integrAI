@@ -24,7 +24,7 @@
                     <h6 class="text-muted">{{ item.tipo|title }}</h6>
                     <small class="text-muted">{{ item.data|date:"d/m/Y H:i" }}</small>
                 </div>
-                <p class="card-text mt-2">{{ item.conteudo|linebreaksbr }}</p>
+                <p class="card-text mt-2">{{ item.conteudo|safe }}</p>
             </div>
             <div class="card-footer bg-white d-flex justify-content-end">
                 {% with mensagem_padrao=item.conteudo|striptags|truncatechars:120 %}

@@ -323,6 +323,8 @@ from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from .models import Gestante
 
+import markdown
+
 def feed_gestante(request, id):
     gestante = get_object_or_404(Gestante, id=id)
 
@@ -362,6 +364,9 @@ def feed_gestante(request, id):
 ✊ **Você faz a diferença!** Cada orientação simples pode transformar realidades. Vamos juntos?"""
         },
     ]
+
+    for item in feed:
+        item["conteudo"] = markdown.markdown(item["conteudo"])
 
     return render(request, 'gestantes/feed.html', {
         'gestante': gestante,
