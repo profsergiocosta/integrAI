@@ -17,7 +17,7 @@ def auth_callback(username: str, password: str):
 @cl.on_chat_start
 async def on_chat_start():
     app_user = cl.user_session.get("user")
-    await cl.Message(f"Ola Agente Comunitário").send()
+    await cl.Message(f"Ola Agente Comunitário tudo").send()
 
 
 
