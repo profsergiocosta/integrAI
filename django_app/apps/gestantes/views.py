@@ -387,14 +387,26 @@ def feed_gestante(request, id):
      #   item["conteudo"] = markdown.markdown(item["conteudo"])
 
 
-
     for item in feed:
         item["conteudo"] = markdown.markdown(item["conteudo"])
+        
         if item["tipo"] == "orientacao" and item.get("mensagens_whatsapp"):
-            mensagem_random = random.choice(item["mensagens_whatsapp"])
-            conteudo = mensagem_random["conteudo"]
-            conteudo = conteudo.replace("[Nome]", gestante.nome)
-            item["mensagem_padrao"] = conteudo
+            mensagens_tratadas = []
+
+            for msg in item["mensagens_whatsapp"]:
+                # Substitui [Nome] no conteúdo
+                conteudo = msg["conteudo"].replace("[Nome]", gestante.nome)
+                mensagens_tratadas.append({
+                    "titulo": msg["titulo"],
+                    "conteudo": conteudo
+                })
+
+            item["mensagens_whatsapp"] = mensagens_tratadas
+
+            # Define mensagem padrão aleatória
+            mensagem_random = random.choice(mensagens_tratadas)
+            item["mensagem_padrao"] = mensagem_random["conteudo"]
+
 
     return render(request, 'gestantes/feed.html', {
         'gestante': gestante,
