@@ -54,7 +54,7 @@ class GestanteForms(forms.ModelForm):
                     'class': 'form-control',
                     'step': '0.01',
                     'inputmode': 'decimal',
-                    'placeholder': 'Digite a altura (ex: 1.58)'
+                    'placeholder': 'Digite a altura (ex: 1,58)'
                 }
             ),
 
