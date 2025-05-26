@@ -1,70 +1,65 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    
     <div class="d-flex align-items-center">
+        <button class="navbar-toggler order-0 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-
-    <button class="navbar-toggler order-0 me-2" type="button" data-toggle="collapse" data-target="#navbarNav" 
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    
-
-    <a class="navbar-brand" href="{% url 'index' %}">
-        Integr<strong><span style="color: #41A3A6;">AI</span></strong> 1000 dias
-    </a>
-    
+        <a class="navbar-brand" href="{% url 'index' %}">
+            Integr<strong><span style="color: #41A3A6;">AI</span></strong> 1000 dias
+        </a>
     </div>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
         <!-- Links alinhados à esquerda -->
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center" href="{% url 'lista_gestantes' %}">
-                    <i class="fas fa-list-alt mr-2"></i> Gestantes
+                    <i class="fas fa-list-alt me-2"></i> Gestantes
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center" href="{% url 'nova_gestante' %}">
-                    <i class="fas fa-user-plus mr-2"></i> Nova Gestante
+                    <i class="fas fa-user-plus me-2"></i> Nova Gestante
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center" href="{% url 'chat' %}">
-                    <i class="fas fa-comments mr-2"></i> Mar<span style="color: #41A3A6;">IA</span>
+                    <i class="fas fa-comments me-2"></i> Mar<span style="color: #41A3A6;">IA</span>
                 </a>
             </li>
             {% endif %}
         </ul>
 
         <!-- Links alinhados à direita -->
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="/admin/">
-                        <i class="fas fa-cogs mr-2"></i> Administração
+                        <i class="fas fa-cogs me-2"></i> Administração
                     </a>
                 </li>
                 {% endif %}
 
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="{% url 'logout' %}">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                        <i class="fas fa-sign-out-alt me-2"></i> Sair
                     </a>
                 </li>
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="{% url 'cadastro' %}">
-                        <i class="fas fa-user-shield mr-2"></i> Novo Agente
+                        <i class="fas fa-user-shield me-2"></i> Novo Agente
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="{% url 'login' %}">
-                        <i class="fas fa-sign-in-alt mr-2"></i> Entrar
+                        <i class="fas fa-sign-in-alt me-2"></i> Entrar
                     </a>
                 </li>
             {% endif %}
