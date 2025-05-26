@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.postgres.fields import JSONField  # Se estiver usando PostgreSQL
 
 from django.templatetags.static import static
-
+from datetime import date
 
 class Gestante(models.Model):
 
@@ -21,7 +21,13 @@ class Gestante(models.Model):
     ]
 
     nome = models.CharField(max_length=100)
-    idade = models.PositiveIntegerField()
+    
+    data_nascimento = models.DateField(
+        verbose_name="Data de Nascimento",
+        blank=False,
+        null=False
+    )
+
     peso = models.PositiveIntegerField(
         verbose_name="Peso pré-gestacional (kg)",
         blank=False,
@@ -80,6 +86,13 @@ class Gestante(models.Model):
             return "Adequado"
         else:
             return "Excesso de peso"
+    
+    @property
+    def idade(self):
+        today = date.today()
+        return today.year - self.data_nascimento.year - (
+            (today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day)
+        )
 
     def clean(self):
         if self.peso < 30 or self.peso > 200:

@@ -14,7 +14,7 @@ class ListandoGestante(admin.ModelAdmin):
     list_display_links = ("id","nome")
     search_fields = ("nome",)
     #list_filter = ("sexo",)
-    list_editable = ("idade", "foto")
+    list_editable = ( "foto", )
     #list_editable = ("sexo","idade", "foto")
     list_per_page = 10
 

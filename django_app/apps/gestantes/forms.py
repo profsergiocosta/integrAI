@@ -57,6 +57,8 @@ class GestanteForms(forms.ModelForm):
                     'placeholder': 'Digite a altura (ex: 1.58)'
                 }
             ),
+
+            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
         }
     
 
