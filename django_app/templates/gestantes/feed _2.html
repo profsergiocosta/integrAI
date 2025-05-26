@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Cabeçalho da Gestante -->
+    <div class="d-flex align-items-center mb-4">
+        <img src="{% if gestante.foto %}{{ gestante.foto.url }}{% else %}{% static 'assets/imagens/gestante/silhueta.png' %}{% endif %}"
+             class="rounded-circle me-3"
+             width="60" height="60"
+             alt="Foto da gestante">
+        <div>
+            <h5 class="mb-0"><strong>{{ gestante.nome }}</strong></h5>
+            <small class="text-muted">Feed personalizado</small>
+        </div>
+    </div>
+
+    <!-- Publicações do Feed -->
+    {% for item in feed %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="text-muted">{{ item.tipo|title }}</h6>
+                    <small class="text-muted">{{ item.data|date:"d/m/Y H:i" }}</small>
+                </div>
+                <p class="card-text mt-2">{{ item.conteudo|safe }}</p>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-end">
+                {% with mensagem_padrao=item.conteudo|striptags|truncatechars:120 %}
+                {% if gestante.telefone %}
+                    <a href="https://wa.me/55{{ gestante.telefone|default_if_none:''|cut:' '|cut:'-'|cut:'('|cut:')' }}?text={{ mensagem_padrao|urlencode }}"
+                       target="_blank"
+                       class="btn btn-success btn-sm d-inline-flex align-items-center"
+                       style="background-color: #25D366; border-color: #25D366;">
+                        <i class="fab fa-whatsapp me-1"></i> Enviar no Whatsapp
+                    </a>
+                {% else %}
+                    <a href="https://wa.me/?text={{ mensagem_padrao|urlencode }}"
+                       target="_blank"
+                       class="btn btn-success btn-sm d-inline-flex align-items-center"
+                       style="background-color: #25D366; border-color: #25D366;">
+                        <i class="fab fa-whatsapp me-1"></i> Enviar no Whatsapp
+                    </a>
+                {% endif %}
+            {% endwith %}
+
+     
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">
+            Nenhuma publicação no feed ainda.
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

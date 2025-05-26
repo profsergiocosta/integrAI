@@ -35,7 +35,7 @@
             <h5 class="card-title text-center">Recomendações para <strong>{{ gestante.nome }}</strong></h5>
 
       
-            <div class="container">
+            <div class="container" style="text-align: justify;">
 
                 <p><strong>Gestação + primeiros 2 anos da criança</strong> são decisivos para prevenir a obesidade. Fatores como <strong>sobrepeso/obesidade materna</strong>, <strong>situação socioeconômica desfavorável</strong>, <strong>idade materna</strong> e <strong>consumo de ultraprocessados</strong> aumentam o risco. Entenda cada um:</p>
             
@@ -66,12 +66,16 @@
           </div>
 
         </div>
-    </div>
+      </div>
 
 
-    <div class="text-center mt-3">
-        <a href={% url 'chat' %} class="btn btn-primary">
-            <i class="fas fa-comments"></i> Tire suas dǘvidas com a MarIA
+      <div class="text-center mt-3 d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{% url 'chat' %}" class="btn btn-primary">
+            <i class="fas fa-comments"></i> Tire suas dúvidas com a MarIA
+        </a>
+    
+        <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info">
+            <i class="fas fa-list"></i> Feed com Dicas e Orientações
         </a>
     </div>
 

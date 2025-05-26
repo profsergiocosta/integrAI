@@ -12,6 +12,7 @@ from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 from django.db.models import OuterRef, Subquery, DateField
 from django.utils.text import slugify
 
+import random
 
 def index(request):
         
@@ -334,39 +335,66 @@ def feed_gestante(request, id):
             "gestante": gestante,
             "data": datetime(2025, 5, 23, 14, 30),
             "tipo": "orientacao",
-            "conteudo": """Que tal usar o WhatsApp para fortalecer o vínculo com as gestantes?
-**Envie uma mensagem semanal** com dicas práticas:
-
-- "Oi, [Nome]! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"
-- "Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"
-- "Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"
-"""
+            "conteudo": """Que tal usar o **WhatsApp** para fortalecer o vínculo com as gestantes?
+    Envie uma mensagem semanal com dicas práticas.""",
+            "mensagens_whatsapp": [
+                {
+                    "titulo": "Dica de alimentação",
+                    "conteudo": "Oi, [Nome]! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"
+                },
+                {
+                    "titulo": "Dica de atividade física",
+                    "conteudo": "Oi, [Nome]! Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"
+                },
+                {
+                    "titulo": "Dica sobre alimentação natural",
+                    "conteudo": "Ola, [Nome]! Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"
+                }
+            ]
         },
         {
             "gestante": gestante,
             "data": datetime(2025, 5, 23, 15, 00),
             "tipo": "orientacao",
-            "conteudo": """Os ultraprocessados (como biscoitos, salgadinhos, refrigerantes) têm alta densidade calórica, excesso de açúcares, gorduras e aditivos químicos, mas são pobres em nutrientes. Esses produtos estimulam o consumo excessivo, desequilibram o metabolismo e aumentam o risco de obesidade. Durante os primeiros 1000 dias (gestação + primeiros 2 anos da criança), o consumo materno influencia a programação metabólica do bebê, impactando seu peso futuro.
-
-**Como transmitir à gestante de forma clara e acolhedora:**
-
-- **Abordagem prática:** Sugira substituições simples: *"Dona Maria, que tal trocar o pacote de bolacha por uma fruta ou um cuscuz com ovo? É mais nutritivo e protege você e o bebê."*
-- **Explicação técnica simplificada:** *"Esses alimentos industrializados enganam a fome rápido, mas não alimentam de verdade. Com o tempo, podem fazer o corpo acumular mais gordura, até para o bebê."*
-- **Dica de rotina:** Oriente ler rótulos: *"Se a lista tem nomes difíceis, como ‘xarope de glicose’ ou ‘gordura vegetal hidrogenada’, é melhor evitar."*
-"""
+            "conteudo": """Os ultraprocessados (como biscoitos, salgadinhos, refrigerantes) são pobres em nutrientes e aumentam o risco de obesidade.""",
+            "mensagens_whatsapp": [
+                {
+                    "titulo": "Substituição prática",
+                    "conteudo": "Dona Maria, que tal trocar o pacote de bolacha por uma fruta ou um cuscuz com ovo? É mais nutritivo e protege você e o bebê."
+                },
+                {
+                    "titulo": "Explicação simplificada",
+                    "conteudo": "Esses alimentos industrializados enganam a fome rápido, mas não alimentam de verdade. Com o tempo, podem fazer o corpo acumular mais gordura, até para o bebê."
+                },
+                {
+                    "titulo": "Dica de rotina",
+                    "conteudo": "Se a lista de ingredientes tem nomes difíceis, como ‘xarope de glicose’ ou ‘gordura vegetal hidrogenada’, é melhor evitar."
+                }
+            ]
         },
         {
             "gestante": gestante,
             "data": datetime(2025, 5, 22, 10, 15),
             "tipo": "dica",
-            "conteudo": """Inclua sempre uma pergunta no final das mensagens, como *"O que achou da dica?"*, para estimular a interação. Isso cria confiança e ajuda a identificar necessidades específicas!
+            "conteudo": """Inclua sempre uma pergunta no final das mensagens, como "O que achou da dica?", para estimular a interação. Isso cria confiança e ajuda a identificar necessidades específicas!
 
-✊ **Você faz a diferença!** Cada orientação simples pode transformar realidades. Vamos juntos?"""
-        },
+    ✊ Você faz a diferença! Cada orientação simples pode transformar realidades. Vamos juntos?"""
+        }
     ]
+
+
+    #for item in feed:
+     #   item["conteudo"] = markdown.markdown(item["conteudo"])
+
+
 
     for item in feed:
         item["conteudo"] = markdown.markdown(item["conteudo"])
+        if item["tipo"] == "orientacao" and item.get("mensagens_whatsapp"):
+            mensagem_random = random.choice(item["mensagens_whatsapp"])
+            conteudo = mensagem_random["conteudo"]
+            conteudo = conteudo.replace("[Nome]", gestante.nome)
+            item["mensagem_padrao"] = conteudo
 
     return render(request, 'gestantes/feed.html', {
         'gestante': gestante,
