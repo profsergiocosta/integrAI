@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% load static %}
+{% load l10n %}
 {% block content %}
 
 <div class="container">
@@ -17,12 +18,16 @@
                 {% endif %}
                 <div class="card-body text-center">
                     <h5 class="card-title mb-2">{{ gestante.nome }}</h5>
-                    <p class="card-text">Idade: <strong>{{ gestante.idade }}</strong></p>
+                    <p class="card-text"><strong>Idade:</strong> {{ gestante.idade }}</p>
+
+                    {% localize on %}
 
                     <!-- Informações adicionais -->
                     <p class="card-text">
                         <strong>Altura:</strong> {{ gestante.altura }} m
                     </p>
+
+                    {% endlocalize %}
 
                     <!-- Peso (Peso atual, se houver avaliação) -->
                     {% if ultima_avaliacao %}
@@ -31,7 +36,10 @@
                         </p>
                     {% else %}
                         <p class="card-text">
-                            <strong>Peso:</strong> {{ gestante.peso }} kg
+                            <strong>Peso Pré-Gestacional:</strong> {{ gestante.peso }} kg
+                        </p>
+                        <p class="card-text">
+                            <strong>IMC Pré-Gestacional:</strong> {{ gestante.imc }} ({{ gestante.imc_classificacao }})
                         </p>
                     {% endif %}
 
@@ -45,18 +53,35 @@
                     {% endif %}
 
                     
-                    <!-- Botões de Ação (Alterar e Excluir) -->
-                    <div class="d-flex flex-wrap justify-content-center">
-                        <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2 mr-3">
+                    <p class="card-text">
+                        <strong>Última Avaliação:</strong> {{ ultima_avaliacao.data_aplicacao|date:"d/m/Y" }}
+                    </p>
+
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{% url 'editar_gestante' gestante.id %}" class="btn btn-outline-primary px-4 py-2">
                             <i class="fas fa-edit"></i> Atualizar
                         </a>
-                        <!-- Botão para abrir o modal -->
+                        
                         <button type="button" class="btn btn-outline-danger px-4 py-2" 
                                 data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </button>
-                        </div>
+                    
+                        <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info px-4 py-2">
+                            <i class="fas fa-list"></i> Feed de Dicas
+                        </a>
+                    </div>
+                    
 
+                        
+
+                        <hr class="my-4">
+
+                        <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
+                        <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                            <i class="fas fa-exclamation-triangle"></i> Avaliação
+                        </a>
+            
 
 
                 </div>
@@ -64,58 +89,116 @@
         </div>
 
 
-        <!-- Card de Recomendações -->
-        <div class="col-lg-6 col-md-12 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Recomendações por desfecho</h5>
-                    {% if ultima_avaliacao %}
-                        <p class="text-muted">Clique em um dos itens abaixo para visualizar as recomendações geradas a partir da avaliação.</p>
+<!-- Card de Riscos -->
 
-                        <!-- Botões de Riscos -->
-                        <div class="d-flex flex-column gap-3">
-                            <a href="{% url 'detalhes_risco' gestante.id 'asma' %}" class="btn btn-outline-info py-3">
-                                <i class="fas fa-lungs"></i> Asma
-                            </a>
+<div class="col-lg-6 col-md-12 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            {% if penultima_avaliacao %}
+                <h5 class="card-title">Evolução dos Riscos</h5>
+                <p class="text-muted">Comparativo entre as duas últimas avaliações:</p>
 
-                            <a href="{% url 'detalhes_risco' gestante.id 'obesidade' %}" class="btn btn-outline-warning py-3">
-                                <i class="fas fa-weight"></i> Obesidade
-                            </a>
-
-                            <a href="{% url 'detalhes_risco' gestante.id 'carie' %}" class="btn btn-outline-success py-3">
-                                <i class="fas fa-tooth"></i> Cárie
-                            </a>
+                {% if evolucao_riscos %}
+                    <!-- Primeiro risco em destaque -->
+                    <strong>                        
+                            Risco Combinado para Doenças Crônicas na Infância
+                    </strong>
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            {{ evolucao_riscos.0.direcao }} 
+                            <a href="{% url 'detalhes_risco' gestante.id evolucao_riscos.0.slug %}" class="text-decoration-none fw-bold">
+                                {{ evolucao_riscos.0.nome }}
+                            </a>: {{ evolucao_riscos.0.seta }} 
+                            {{ evolucao_riscos.0.anterior }}% → {{ evolucao_riscos.0.atual }}% {{ evolucao_riscos.0.icone }}
                         </div>
-                    {% else %}
-                        <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
+                        <div class="{{ evolucao_riscos.0.classe }}"></div>
+                    </div>
+
+                    <!-- Lista com os demais riscos -->
+                    {% if evolucao_riscos|length > 1 %}
+                        <strong> Riscos por doença </strong>
+                        <ul class="list-group text-start">
+                            {% for risco in evolucao_riscos|slice:"1:" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        {{ risco.direcao }}
+                                        <a href="{% url 'detalhes_risco' gestante.id risco.slug %}" class="text-decoration-none fw-bold">
+                                            {{ risco.nome }}
+                                        </a>: {{ risco.seta }} {{ risco.anterior }}% → {{ risco.atual }}% {{ risco.icone }}
+                                    </span>
+                                    <span class="{{ risco.classe }}"></span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
+                {% endif %}
 
-       
+                <hr class="my-4">
 
-                    <!-- Espaço para separação visual -->
-                    <hr class="my-4">
-
-                    <!-- Botão de Avaliação (Sempre visível) -->
-                    <p class="text-muted">Clique para abrir o formulário de avaliação.</p>
-                    <a href="{% url 'questionario' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
-                        <i class="fas fa-exclamation-triangle"></i> Avaliação
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Botão de Voltar - Centralizado -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fas fa-arrow-left"></i> Voltar
+                <p class="text-muted">
+                    Clique para visualizar um gráfico <strong>detalhado</strong> com a evolução dos riscos durante a gestação.
+                </p>
+                <a href="{% url 'evolucao_riscos' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                    <i class="fas fa-exclamation-triangle"></i> Evolução dos riscos
                 </a>
-            </div>
+
+            {% elif ultima_avaliacao %}
+                <h5 class="card-title">Riscos da Última Avaliação</h5>
+                <p class="text-muted">Resumo dos riscos identificados:</p>
+
+                {% if riscos %}
+                    <!-- Primeiro risco em evidência -->
+                    <strong>            
+                            Risco Combinado para Doenças Crônicas na Infância
+                    </strong>
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            {{ riscos.0.icone }} 
+                            <a href="{% url 'detalhes_risco' gestante.id riscos.0.slug %}" class="text-decoration-none fw-bold">
+                                {{ riscos.0.nome }}
+                            </a>
+                        </div>
+                        <div class="{{ riscos.0.classe }}">
+                            <strong>{{ riscos.0.valor }}%</strong>
+                        </div>
+                    </div>
+
+                    <!-- Lista com os demais riscos -->
+                    {% if riscos|length > 1 %}
+                        <strong> Riscos por doença </strong>
+                        <ul class="list-group text-start">
+                            {% for risco in riscos|slice:"1:" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'detalhes_risco' gestante.id risco.slug %}" class="text-decoration-none">
+                                        {{ risco.icone }} {{ risco.nome }}
+                                    </a>
+                                    <span class="{{ risco.classe }}">{{ risco.valor }}%</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endif %}
+
+                <hr class="my-4">
+
+                <p class="text-muted">
+                    Clique para visualizar um gráfico <strong>detalhado</strong> com a evolução dos riscos durante a gestação.
+                </p>
+                <a href="{% url 'evolucao_riscos' gestante.id %}" class="btn btn-outline-warning px-4 py-2">
+                    <i class="fas fa-exclamation-triangle"></i> Evolução dos riscos
+                </a>
+
+            {% else %}
+                <h5 class="card-title">Sem Avaliações</h5>
+                <p class="text-muted">Nenhuma avaliação registrada para esta gestante.</p>
+            {% endif %}
         </div>
     </div>
 </div>
+
+
+
+
 
 <!-- Modal de Confirmação -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">

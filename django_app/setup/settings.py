@@ -89,8 +89,19 @@ DATABASES = {
         'PORT': '5432',  # Porta padrão do PostgreSQL
     }
 }
+'''
 
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',  # Nome do banco de dados (POSTGRES_DB)
+        'USER': 'postgres',  # Usuário do banco de dados (POSTGRES_USER)
+        'PASSWORD': 'postgres',  # Senha do banco de dados (POSTGRES_PASSWORD)
+        'HOST': 'localhost',  # Nome do serviço definido no docker-compose.yml
+        'PORT': '5432',  # Porta padrão do PostgreSQL
+    }
+}
+'''
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -117,10 +128,8 @@ LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
-USE_I18N = True
 
-USE_TZ = True
-
+DECIMAL_SEPARATOR = ','
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -154,3 +163,7 @@ MESSAGE_TAGS = {
 
 # remover
 ALLOWED_HOSTS = ['*']
+
+
+#DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 5MB
+#FILE_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 5MB

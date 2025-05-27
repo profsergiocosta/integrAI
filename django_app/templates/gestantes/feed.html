@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Cabeçalho da Gestante -->
+    <div class="d-flex align-items-center mb-4">
+        <img src="{% if gestante.foto %}{{ gestante.foto.url }}{% else %}{% static 'assets/imagens/gestante/silhueta.png' %}{% endif %}"
+             class="rounded-circle me-3"
+             width="60" height="60"
+             alt="Foto da gestante">
+        <div>
+            <h5 class="mb-0"><strong>{{ gestante.nome }}</strong></h5>
+            <small class="text-muted">Feed personalizado</small>
+        </div>
+    </div>
+
+    <!-- Publicações do Feed -->
+
+<!-- Publicações do Feed -->
+{% for item in feed %}
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h6 class="text-muted">{{ item.tipo|title }}</h6>
+            <small class="text-muted">{{ item.data|date:"d/m/Y H:i" }}</small>
+        </div>
+
+        <!-- Conteúdo da orientação sempre exibido -->
+        <p class="card-text mt-2">{{ item.conteudo|safe }}</p>
+
+        {% if item.tipo == "orientacao" %}
+            <button class="btn btn-outline-primary btn-sm mt-2" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#gerarMsg{{ forloop.counter }}"
+                    aria-expanded="false" aria-controls="gerarMsg{{ forloop.counter }}">
+                Você quer que eu crie uma mensagem para você?
+            </button>
+
+            <div class="collapse mt-2" id="gerarMsg{{ forloop.counter }}">
+                <label for="textareaMsg{{ forloop.counter }}" class="form-label">Mensagem sugerida:</label>
+                <textarea class="form-control mb-2" rows="3" id="textareaMsg{{ forloop.counter }}">{{ item.mensagem_padrao }}</textarea>
+
+                {% if item.mensagens_whatsapp %}
+                    <div class="mt-2">
+                        <label class="form-label">Outras mensagens:</label><br>
+                        {% for msg in item.mensagens_whatsapp %}
+                            <button type="button" class="btn btn-outline-secondary btn-sm mb-1"
+                                    onclick="document.getElementById('textareaMsg{{ forloop.parentloop.counter }}').value = '{{ msg.conteudo }}'">
+                                {{ msg.titulo }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% with tel=gestante.telefone|default_if_none:''|cut:' '|cut:'-'|cut:'('|cut:')' %}
+                    <a href="#"
+                       class="btn btn-success btn-sm mt-2"
+                       style="background-color: #25D366; border-color: #25D366;"
+                       onclick="enviarWhatsApp('{{ tel }}', 'textareaMsg{{ forloop.counter }}')">
+                        <i class="fab fa-whatsapp me-1"></i> Enviar no WhatsApp
+                    </a>
+                {% endwith %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">
+    Nenhuma publicação no feed ainda.
+</div>
+{% endfor %}
+
+
+
+
+
+<script>
+    function enviarWhatsApp(telefone, textareaId) {
+        const texto = encodeURIComponent(document.getElementById(textareaId).value);
+        let url = 'https://wa.me/';
+        if (telefone) {
+            url += '55' + telefone + '?text=' + texto;
+        } else {
+            url += '?text=' + texto;
+        }
+        window.open(url, '_blank');
+    }
+
+
+    function carregarNovaMensagem(counter, mensagens, nome) {
+        if (!Array.isArray(mensagens) || mensagens.length === 0) {
+            alert("Nenhuma mensagem disponível.");
+            return;
+        }
+    
+        const randomIndex = Math.floor(Math.random() * mensagens.length);
+        let novaMsg = mensagens[randomIndex];
+    
+        // Substituir [Nome] pelo nome da gestante
+        novaMsg = novaMsg.replace('[Nome]', nome);
+    
+        const textarea = document.getElementById(`textareaMsg${counter}`);
+        textarea.value = novaMsg;
+    }
+
+    </script>
+
+</div>
+
+{% endblock %}

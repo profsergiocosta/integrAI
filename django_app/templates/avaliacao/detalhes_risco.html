@@ -5,73 +5,83 @@
 {% block content %}
 
 
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #8C0333;
+    }
+    strong {
+      font-weight: bold;
+    }
+
+    ul {
+      padding-left: 10px;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
+
 <!-- Card de Dicas Práticas -->
 <div class="col-lg-12 mb-4">
     <div class="card shadow-sm">
         <div class="card-body">
-            <h5 class="card-title text-center">Recomendações Gerais para <strong>{{ gestante.nome }}</strong></h5>
+            <h5 class="card-title text-center">Recomendações para <strong>{{ gestante.nome }}</strong></h5>
 
-            {% if risco == "carie" %}
+      
+            <div class="container" style="text-align: justify;">
 
-            <p>
-                Olá, <strong> {{ request.user }}</strong>! Eu sou a Maria, ACS e sua companheira nessa jornada de saúde. Vamos falar sobre a cárie, uma doença que pode afetar a saúde bucal das gestantes e de seus bebês.
+                <p><strong>Gestação + primeiros 2 anos da criança</strong> são decisivos para prevenir a obesidade. Fatores como <strong>sobrepeso/obesidade materna</strong>, <strong>situação socioeconômica desfavorável</strong>, <strong>idade materna</strong> e <strong>consumo de ultraprocessados</strong> aumentam o risco. Entenda cada um:</p>
+            
+                <ul>
+                  <li>
+                    <strong>Sobrepeso/Obesidade na Gestação:</strong>
+                    O excesso de peso da mãe altera o ambiente uterino, predispondo o bebê a acumular mais gordura. O acompanhamento do Índice de Massa Corporal (IMC) durante o pré-natal é essencial para orientar alimentação e atividade física adequadas.
+                  </li>
+            
+                  <li>
+                    <strong>Situação Socioeconômica:</strong>
+                    Famílias com menos recursos têm maior dificuldade de acesso a alimentos frescos (frutas, legumes) e tendem a consumir mais ultraprocessados (pela praticidade e custo menor). Isso impacta diretamente a qualidade nutricional da gestante e do bebê.
+                  </li>
+            
+                  <li>
+                    <strong>Idade Materna:</strong>
+                    Gestantes adolescentes podem ter menos acesso a informações sobre alimentação saudável, enquanto mães acima de 35 anos têm maior risco de desenvolver obesidade durante a gravidez. Ambas as situações exigem atenção redobrada.
+                  </li>
+            
+                  <li>
+                    <strong>Consumo de Ultraprocessados:</strong>
+                    Alimentos como salgadinhos, refrigerantes e macarrão instantâneo são ricos em açúcar, sal e gordura, mas pobres em nutrientes. Seu consumo excessivo durante a gestação e nos primeiros anos de vida desregula o metabolismo da criança, aumentando o risco de obesidade.
+                  </li>
+                </ul>
+              </div>
 
-            </p>
 
-            <p class="text-muted text-center">
-            <strong> {{ request.user }}</strong>, aqui vão algumas recomendações você para utilizar ao conversar com {{ gestante.nome }} sobre a prevenção e controle da cárie:
-            </p>
-
-            <!-- Dica: Higiene Bucal -->
-            <div class="mb-3">
-                <h6 class="text-primary"><i class="fas fa-tooth"></i> Higiene Bucal Adequada</h6>
-                <p>
-                    Lembre as gestantes de que a higiene bucal é fundamental para prevenir a cárie. Sugira que elas escovem os dentes pelo menos duas vezes ao dia com flúor e usem fio dental diariamente.
-                    Além disso, é importante visitar o dentista regularmente para check-ups e limpeza.
-                </p>
-                <blockquote class="blockquote text-muted">
-                    "Lembre-se de escovar os dentes após cada refeição e visitar o dentista a cada 6 meses para manter a saúde bucal em dia!"
-                </blockquote>
-            </div>
-
-            <!-- Dica: Alimentação Saudável -->
-            <div class="mb-3">
-                <h6 class="text-success"><i class="fas fa-apple-alt"></i> Alimentação Saudável</h6>
-                <p>
-                    Converse com as gestantes sobre a importância de uma alimentação equilibrada para prevenir a cárie. Incentive a redução do consumo de alimentos açucarados e ácidos, 
-                    e a preferência por alimentos ricos em cálcio, como leite e queijo.
-                </p>
-                <blockquote class="blockquote text-muted">
-                    "Tente incluir alimentos ricos em cálcio na sua dieta, como leite e queijo, e evite alimentos açucarados e ácidos que podem danificar os dentes."
-                </blockquote>
-            </div>
-
-            <!-- Dica: Uso Responsável de Chupetas -->
-            <div>
-                <h6 class="text-warning"><i class="fas fa-baby"></i> Uso Responsável de Chupetas</h6>
-                <p>
-                    Oriente as gestantes a evitar o uso excessivo de chupetas adocicadas. Recomende chupetas sem açúcar e incentive o oferecimento de água ou leite materno como alternativas. 
-                    Além disso, é essencial manter as chupetas limpas para evitar a proliferação de bactérias.
-                </p>
-                <blockquote class="blockquote text-muted">
-                    "Tente usar chupetas sem açúcar ou ofereça água ou leite materno em vez de chupetas adocicadas, e lembre-se de limpar as chupetas regularmente para evitar a acumulação de bactérias."
-                </blockquote>
-            </div>
-            {% else %}
-
-            <p style="color:red"> Incluído apenas um texto exemplo para cárie </p>
-
-            {% endif %}
-
-            <div class="text-center mt-3">
-                <a href={% url 'chat' %} class="btn btn-primary">
-                    <i class="fas fa-comments"></i> Iniciar conversa com a MarIA
-                </a>
-            </div>
+          </div>
 
         </div>
+      </div>
+
+
+      <div class="text-center mt-3 d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{% url 'chat' %}" class="btn btn-primary">
+            <i class="fas fa-comments"></i> Tire suas dúvidas com a MarIA
+        </a>
+    
+        <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info">
+            <i class="fas fa-list"></i> Feed com Dicas e Orientações
+        </a>
     </div>
+
 </div>
+
+
 
 
 {% endblock %}

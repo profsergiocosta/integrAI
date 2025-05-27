@@ -8,17 +8,17 @@ admin.site.site_title = "Administração do Meu Site"  # Título na aba do naveg
 admin.site.index_title = "Bem-vindo ao Painel de Controle"  # Título na página inicial do admin
 
 
-class ListandoPacientes(admin.ModelAdmin):
+class ListandoGestante(admin.ModelAdmin):
     #list_display = ("id", "nome", "sexo", "idade","foto")
     list_display = ("id", "nome", "idade","foto")
     list_display_links = ("id","nome")
     search_fields = ("nome",)
     #list_filter = ("sexo",)
-    list_editable = ("idade", "foto")
+    list_editable = ( "foto", )
     #list_editable = ("sexo","idade", "foto")
     list_per_page = 10
 
-admin.site.register(Gestante, ListandoPacientes)
+admin.site.register(Gestante, ListandoGestante)
 
 
 @admin.register(Avaliacao)

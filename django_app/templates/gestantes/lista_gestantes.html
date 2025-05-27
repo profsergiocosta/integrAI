@@ -2,6 +2,9 @@
 {% load static %}
 {% block content %}
 
+<style>
+
+  </style>
 
 <!-- Filtro de busca -->
 <div class="row">
@@ -24,18 +27,37 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th scope="col">Foto</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Idade</th>
+                    <th scope="col">Última Avaliação</th>
                     <th scope="col">Ação</th>
                 </tr>
             </thead>
             <tbody>
                 {% for gestante in cards %}
-                <tr onclick="window.location.href='{% url 'gestante' gestante.id %}';">
+
+                <tr >
+
+                    <td>
+                        <img src="{{ gestante.foto_url }}" class="card-img-top" alt="Foto da gestante" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+
+                    </td>
+                    
                     <td>{{ gestante.nome }}</td>
                     <td>{{ gestante.idade }}</td>
+
                     <td>
-                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary">Detalhes</a>
+                        {% if gestante.ultima_avaliacao %}
+                            {{ gestante.ultima_avaliacao|date:"d/m/Y" }}
+                        {% else %}
+                            <span class="text-muted">Não avaliada</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'gestante' gestante.id %}" class="btn btn-outline-primary btn-sm">Detalhes</a>
+                        <a href="{% url 'feed_gestante' gestante.id %}" class="btn btn-outline-info btn-sm">Feed</a>
                     </td>
                 </tr>
                 {% endfor %}

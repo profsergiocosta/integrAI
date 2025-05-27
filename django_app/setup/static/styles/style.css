@@ -1,20 +1,44 @@
-body {
-    padding-top: 80px; /* Para não sobrepor o cabeçalho */
-    background-color: #fff0f5; /* Rosa claro, tom feminino e suave */
-    font-family: 'Poppins', sans-serif; /* Fonte mais arredondada e moderna */
+/* Adicionando nova cor primária complementar */
+:root {
+    --rosa-principal: #d6336c;
+    --rosa-escuro: #8c1c3d;
+    --rosa-claro: #ffe4e1;
+    --rosa-muito-claro: #fff0f5;
+    --verde-destaque: #41A3A6;
+    --verde-agua-claro: #A9D9DB;
 }
 
-body {
-    padding-bottom: 50px; /* Espaçamento acima do rodapé */
-}
 
+    /* Aplica a cor da borda na tabela com a classe table-bordered */
+    table.table-bordered {
+        border-color: #41A3A6 !important;
+      }
+    
+      /* Aplica a cor da borda nas células da tabela */
+      table.table-bordered th,
+      table.table-bordered td {
+        border-color: #41A3A6 !important;
+      }
+  
+      table.table-bordered thead th {
+          background-color:var(--rosa-principal);
+          color: white;
+        }
+
+/* Estilos globais */
+body {
+    padding-top: 80px;
+    padding-bottom: 50px;
+    background-color: var(--rosa-muito-claro);
+    font-family: 'Poppins', sans-serif;
+}
 
 nav {
-    background-color: #d6336c; /* Tom mais quente e feminino para o cabeçalho */
+    background-color: var(--rosa-principal);
 }
 
 footer {
-    background-color: #8c1c3d; /* Tom harmônico com o cabeçalho */
+    background-color: var(--rosa-escuro);
     color: #ffffff;
     padding: 12px;
     text-align: center;
@@ -23,17 +47,16 @@ footer {
 .card-img-top {
     height: 150px;
     object-fit: contain;
-    border-radius: 8px; /* Cantos arredondados para um visual mais delicado */
+    border-radius: 8px;
 }
 
 .card {
-    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 10px; /* Deixando os cards mais arredondados */
-    background-color: #ffe4e1; /* Fundo levemente rosado para mais delicadeza */
+    border-radius: 10px;
+    background-color: var(--rosa-claro);
     border: none;
     padding: 20px;
-    text-align: center; /* Centraliza os elementos dentro do card */
+    text-align: center;
 }
 
 .card-hover:hover {
@@ -41,12 +64,12 @@ footer {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Ajuste dos botões */
+/* Botões */
 .card-buttons, .tags__lista {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centraliza os botões */
-    gap: 16px; /* Maior espaçamento entre botões */
+    justify-content: center;
+    gap: 16px;
     width: 100%;
     padding: 10px;
 }
@@ -54,7 +77,7 @@ footer {
 .card-buttons .btn, .tags__lista .btn {
     flex: 1;
     min-width: 140px;
-    max-width: 200px; /* Ajuste para maior equilíbrio */
+    max-width: 200px;
     padding: 12px 18px;
     font-size: 16px;
     font-weight: bold;
@@ -63,7 +86,7 @@ footer {
 }
 
 .btn-primary {
-    background-color: #d6336c;
+    background-color: var(--rosa-principal);
     color: #ffffff;
     border: none;
 }
@@ -75,7 +98,7 @@ footer {
 
 .btn-secondary {
     background-color: #f8d7da;
-    color: #8c1c3d;
+    color: var(--rosa-escuro);
     border: none;
 }
 
@@ -84,40 +107,25 @@ footer {
     transform: scale(1.05);
 }
 
-/* Ajuste para evitar que os botões fiquem muito colados quando há sidebar */
-.main-content {
-    margin-left: 260px; /* Compensa a largura da sidebar */
-    padding: 10px;
+/* Novo botão com verde */
+.btn-tertiary {
+    background-color: var(--verde-destaque);
+    color: #ffffff;
+    border: none;
 }
 
-@media (max-width: 768px) { /* Ajusta para telas menores */
-    .navbar-brand {
-        white-space: normal; /* Permite quebra de linha */
-        word-wrap: break-word; /* Garante a quebra em palavras longas */
-        max-width: 90%; /* Evita que o título ocupe toda a largura */
-        text-align: left; /* Mantém o texto alinhado à esquerda */
-        text-align: center;
-    }
-
-    .navbar-toggler {
-        order: 1; /* Mantém o botão do menu à direita */
-    }
-
-    .navbar-nav {
-        width: 100%; /* Faz os itens do menu ocuparem toda a largura ao serem abertos */
-        text-align: center; /* Centraliza os links dentro do menu */
-    }
+.btn-tertiary:hover {
+    background-color: #33898b;
+    transform: scale(1.05);
 }
 
-
-
-/* Estilizando a tela de login */
+/* Tela de login */
 .login-container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #fff5f8; /* Rosa bem claro */
+    background-color: #fff5f8;
 }
 
 .form-login {
@@ -130,7 +138,7 @@ footer {
 }
 
 .btn-login {
-    background-color: #d6336c;
+    background-color: var(--rosa-principal);
     color: #ffffff;
     border-radius: 6px;
     padding: 10px 16px;
@@ -143,22 +151,10 @@ footer {
 }
 
 /* Formulários */
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.select-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
-}
-
 label {
     font-weight: bold;
     margin-bottom: 4px;
-    color: #8c1c3d;
+    color: var(--rosa-escuro);
 }
 
 select {
@@ -166,61 +162,32 @@ select {
     padding: 8px;
     font-size: 16px;
     border-radius: 6px;
-    border: 1px solid #d6336c;
-    background-color: #fff0f5;
+    border: 1px solid var(--rosa-principal);
+    background-color: var(--rosa-muito-claro);
 }
 
 /* Barras de progresso */
-.progress-link {
-    text-decoration: none;
-}
-
-.progress {
-    position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.progress:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.progress-bar {
-    transition: background-color 0.3s ease;
-}
-
 .progress-link:hover .progress-bar {
-    background-color: #ff85a2; /* Rosa suave ao invés de laranja */
+    background-color: #ff85a2;
 }
 
+/* Sidebar */
 .sidebar {
-    background-color: #ffe4e1; /* Rosa claro suave */
-    border-radius: 12px; /* Cantos arredondados */
+    background-color: var(--rosa-claro);
+    border-radius: 12px;
     padding: 20px;
-    height: 100vh; /* Ocupa toda a altura da tela */
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 240px;
     left: 0;
     top: 0;
     bottom: 0;
-}
-
-.sidebar-sticky {
-    position: sticky;
-    top: 20px; /* Mantém fixo ao rolar */
-}
-
-.nav.flex-column {
-    padding: 0;
-}
-
-.nav-item {
-    margin-bottom: 10px; /* Espaço entre os itens */
+    z-index: 1000;
 }
 
 .nav-link {
-    color: #8c1c3d; /* Cor harmoniosa com o design */
+    color: var(--verde-destaque);
     font-weight: bold;
     padding: 10px;
     border-radius: 6px;
@@ -228,7 +195,39 @@ select {
 }
 
 .nav-link:hover {
-    background-color: #f8d7da; /* Rosa mais claro ao passar o mouse */
-    transform: scale(1.05); /* Leve aumento */
-    text-decoration: none;
+    color: var(--verde-destaque);
+    background-color: #f8d7da;
+    transform: scale(1.05);
 }
+
+.navbar .nav-link:hover {
+    
+    background-color: var(--verde-agua-claro);
+    transform: scale(1.05);
+}
+
+
+.sidebar {
+    position: relative;
+    background-image: url('/static/assets/imagens/logo.jpeg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 80% auto;
+    background-color: #FFFDF6;
+    padding-top: 20px;
+    color: #333;
+  }
+  
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+ 
+    z-index: 0;
+  }
+  
+  .sidebar > .sidebar-sticky {
+    position: relative;
+    z-index: 1; /* para ficar acima do overlay */
+  }
+  

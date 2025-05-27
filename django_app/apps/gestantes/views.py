@@ -2,23 +2,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 
+import json
+
 from apps.gestantes.models import Gestante, Avaliacao
 
 from apps.gestantes.forms import GestanteForms, AvaliacaoForm
 
 
+from django.db.models import OuterRef, Subquery, DateField
+from django.utils.text import slugify
+
 import random
-
-# Funções para calcular as probabilidades
-def calcular_probabilidade_asma():
-    return round(random.uniform(0, 100), 2)
-
-def calcular_probabilidade_obesidade():
-    return round(random.uniform(0, 100), 2)
-
-def calcular_probabilidade_carie():
-    return round(random.uniform(0, 100), 2)
-
 
 def index(request):
         
@@ -29,32 +23,118 @@ def index(request):
             # Filtra as gestantes pelo usuário logado
         gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
 
-        return render(request, 'gestantes/index.html', {"cards":gestantes})
+        show_welcome = request.session.pop('show_welcome', False)
+
+        return render(request, 'gestantes/index.html', {"cards":gestantes, "show_welcome": show_welcome})
         
 
 def lista_gestantes(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não logado')
         return redirect('login')
+    
+    ultima_avaliacao_subquery = Avaliacao.objects.filter(
+        gestante=OuterRef('pk')
+    ).order_by('-data_aplicacao').values('data_aplicacao')[:1]
+
 
     # Filtra as gestantes pelo usuário logado
-    gestantes = Gestante.objects.filter(usuario=request.user).order_by("-data_cadastro")
+    # Filtra pelo usuário e anota a data da última avaliação
+    gestantes = Gestante.objects.filter(
+        usuario=request.user
+    ).annotate(
+        ultima_avaliacao=Subquery(ultima_avaliacao_subquery, output_field=DateField())
+    ).order_by('-data_cadastro')
 
     return render(request, 'gestantes/lista_gestantes.html', {"cards": gestantes})
 
-
 def gestante(request, gestante_id):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
 
-        if not request.user.is_authenticated:
-                messages.error(request, 'Usuário não logado')
-                return redirect('login')
+    gestante = get_object_or_404(Gestante, pk=gestante_id)
+    avaliacoes = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao')[:2]
 
-        gestante = get_object_or_404(Gestante, pk=gestante_id)
+    ultima_avaliacao = avaliacoes[0] if len(avaliacoes) > 0 else None
+    penultima_avaliacao = avaliacoes[1] if len(avaliacoes) > 1 else None
 
-        # Obter a última avaliação associada à gestante
-        ultima_avaliacao = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao').first()
+    def classificar_risco(prob):
+        if prob >= 70:
+            return "🚨", "text-danger"
+        elif prob >= 31:
+            return "⚠️", "text-warning"
+        else:
+            return "✅", "text-success"
 
-        return render(request, 'gestantes/gestante.html', {'gestante':gestante, 'ultima_avaliacao': ultima_avaliacao})
+    riscos = []
+    evolucao_riscos = []
+
+    if ultima_avaliacao:
+        aval_ultima = {
+            "Risco para Integralidade": ultima_avaliacao.resultado_integralidade_saude["probabilidade"],
+            "Asma": ultima_avaliacao.resultado_asma["probabilidade"],
+            "Obesidade": ultima_avaliacao.resultado_obesidade["probabilidade"],
+            "Cárie": ultima_avaliacao.resultado_carie["probabilidade"],
+            "Alergia": ultima_avaliacao.resultado_alergia["probabilidade"],
+        }
+
+        for nome, prob in aval_ultima.items():
+            icone, classe = classificar_risco(prob)
+            riscos.append({
+                "nome": nome,
+                "valor": round(prob),
+                "icone": icone,
+                "classe": classe,
+                "slug": slugify(nome)  # cria o slug aqui
+            })
+
+        if penultima_avaliacao:
+            aval_penultima = {
+                "Risco para Integralidade": ultima_avaliacao.resultado_integralidade_saude["probabilidade"],
+                "Asma": penultima_avaliacao.resultado_asma["probabilidade"],
+                "Obesidade": penultima_avaliacao.resultado_obesidade["probabilidade"],
+                "Cárie": penultima_avaliacao.resultado_carie["probabilidade"],
+                "Alergia": penultima_avaliacao.resultado_alergia["probabilidade"],
+            }
+
+            for nome in aval_ultima:
+                atual = aval_ultima[nome]
+                anterior = aval_penultima[nome]
+
+                if atual > anterior:
+                    direcao = "📈"
+                    seta = "↑"
+                elif atual < anterior:
+                    direcao = "📉"
+                    seta = "↓"
+                else:
+                    direcao = "➡️"
+                    seta = "="
+
+                icone_atual, classe = classificar_risco(atual)
+
+                evolucao_riscos.append({
+                    "nome": nome,
+                    "direcao": direcao,
+                    "seta": seta,
+                    "anterior": round(anterior),
+                    "atual": round(atual),
+                    "icone": icone_atual,
+                    "classe": classe,
+                     "slug": slugify(nome)  # cria o slug aqui
+                })
+
+    context = {
+        "gestante": gestante,
+        "ultima_avaliacao": ultima_avaliacao,
+        "penultima_avaliacao": penultima_avaliacao,
+        "riscos": riscos,
+        "evolucao_riscos": evolucao_riscos,
+    }
+
+    return render(request, 'gestantes/gestante.html', context)
+
 
 def buscar(request):
 
@@ -63,7 +143,9 @@ def buscar(request):
                 messages.error(request, 'Usuário não logado')
                 return redirect('login')
 
-        gestantes = Gestante.objects.order_by("data_cadastro")
+        # Filtra as gestantes que pertencem ao usuário logado
+        gestantes = Gestante.objects.filter(usuario=request.user).order_by("data_cadastro")
+
 
         if "buscar" in request.GET:
                 nome_a_buscar = request.GET['buscar']
@@ -145,10 +227,9 @@ def deletar_gestante(request, gestante_id):
 
 
 def avaliacao(request, gestante_id):
-     
     if not request.user.is_authenticated:
-                messages.error(request, 'Usuário não logado')
-                return redirect('login')
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
 
     gestante = get_object_or_404(Gestante, id=gestante_id)
 
@@ -159,12 +240,7 @@ def avaliacao(request, gestante_id):
             questionario = form.save(commit=False)
             questionario.gestante = gestante  # Associar o questionário à gestante
 
-            # Calculando as probabilidades antes de salvar
-            questionario.probabilidade_asma = calcular_probabilidade_asma()
-            questionario.probabilidade_obesidade = calcular_probabilidade_obesidade()
-            questionario.probabilidade_carie = calcular_probabilidade_carie()
-
-            # Salvar o questionário com as probabilidades calculadas
+            # Salvar o questionário com as probabilidades calculadas (já calculadas no form)
             questionario.save()
 
             # Redirecionar após o cadastro
@@ -174,15 +250,18 @@ def avaliacao(request, gestante_id):
 
     return render(request, 'avaliacao/questionario.html', {'form': form, 'gestante': gestante})
 
-
+## teria que atualizar o modelo do Risco para usar slug
 def detalhes_risco(request, gestante_id, risco):
     if not request.user.is_authenticated:
                 messages.error(request, 'Usuário não logado')
                 return redirect('login')
 
     gestante = get_object_or_404(Gestante, id=gestante_id)
+    
+    ultima_avaliacao = Avaliacao.objects.filter(gestante=gestante).order_by('-data_aplicacao').first()
+
     # Lógica para exibir os detalhes do risco
-    return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco})
+    return render(request, 'avaliacao/detalhes_risco.html', {'gestante': gestante, 'risco': risco, 'ultima_avaliacao':ultima_avaliacao})
 
 
 def chat(request):
@@ -191,3 +270,145 @@ def chat(request):
                 return redirect('login')
 
     return render(request, 'avaliacao/chat.html')
+
+
+# views.py
+from django.shortcuts import get_object_or_404, render
+from .models import Gestante, Avaliacao
+
+def evolucao_riscos_gestante(request, gestante_id):
+    gestante = get_object_or_404(Gestante, id=gestante_id, usuario=request.user)
+
+    avaliacoes = Avaliacao.objects.filter(
+        gestante=gestante
+    ).order_by('data_aplicacao')
+
+    # Extração dos dados
+    datas = []
+    asma = []
+    obesidade = []
+    carie = []
+    alergia = []
+    integralidade = []
+
+    for av in avaliacoes:
+        data_str = av.data_aplicacao.strftime('%d/%m/%Y')
+        datas.append(data_str)
+
+        asma.append({"x": data_str, "y": av.resultado_asma.get('probabilidade', 0) if av.resultado_asma else 0})
+        obesidade.append({"x": data_str, "y": av.resultado_obesidade.get('probabilidade', 0) if av.resultado_obesidade else 0})
+        carie.append({"x": data_str, "y": av.resultado_carie.get('probabilidade', 0) if av.resultado_carie else 0})
+        alergia.append({"x": data_str, "y": av.resultado_alergia.get('probabilidade', 0) if av.resultado_alergia else 0})
+        integralidade.append({"x": data_str, "y": av.resultado_integralidade_saude.get('probabilidade', 0) if av.resultado_integralidade_saude else 0})
+
+    contexto = {
+        'gestante': gestante,
+        'asma': json.dumps(asma),
+        'obesidade': json.dumps(obesidade),
+        'carie': json.dumps(carie),
+        'alergia': json.dumps(alergia),
+        'integralidade': json.dumps(integralidade),
+    }
+    print (contexto)
+    return render(request, 'gestantes/evolucao_riscos.html', contexto)
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from datetime import datetime
+
+from .models import Gestante  # se já tiver o modelo Gestante
+
+from datetime import datetime
+from django.shortcuts import render, get_object_or_404
+from .models import Gestante
+
+import markdown
+
+def feed_gestante(request, id):
+    gestante = get_object_or_404(Gestante, id=id)
+
+    # Simulação com valores estáticos
+    feed = [
+        {
+            "gestante": gestante,
+            "data": datetime(2025, 5, 23, 14, 30),
+            "tipo": "orientacao",
+            "conteudo": """Que tal usar o **WhatsApp** para fortalecer o vínculo com as gestantes?
+    Envie uma mensagem semanal com dicas práticas.""",
+            "mensagens_whatsapp": [
+                {
+                    "titulo": "Dica de alimentação",
+                    "conteudo": "Oi, [Nome]! Esta semana, que tal incluir uma fruta no lanche? Banana e maçã são ótimas opções!"
+                },
+                {
+                    "titulo": "Dica de atividade física",
+                    "conteudo": "Oi, [Nome]! Sabia que uma caminhada leve de 15 minutos ajuda na saúde da senhora e do bebê? Vamos tentar?"
+                },
+                {
+                    "titulo": "Dica sobre alimentação natural",
+                    "conteudo": "Ola, [Nome]! Evite os enlatados e sucos de caixinha: prefira alimentos naturais. Conte comigo para dúvidas!"
+                }
+            ]
+        },
+        {
+            "gestante": gestante,
+            "data": datetime(2025, 5, 23, 15, 00),
+            "tipo": "orientacao",
+            "conteudo": """Os ultraprocessados (como biscoitos, salgadinhos, refrigerantes) são pobres em nutrientes e aumentam o risco de obesidade.""",
+            "mensagens_whatsapp": [
+                {
+                    "titulo": "Substituição prática",
+                    "conteudo": "Dona Maria, que tal trocar o pacote de bolacha por uma fruta ou um cuscuz com ovo? É mais nutritivo e protege você e o bebê."
+                },
+                {
+                    "titulo": "Explicação simplificada",
+                    "conteudo": "Esses alimentos industrializados enganam a fome rápido, mas não alimentam de verdade. Com o tempo, podem fazer o corpo acumular mais gordura, até para o bebê."
+                },
+                {
+                    "titulo": "Dica de rotina",
+                    "conteudo": "Se a lista de ingredientes tem nomes difíceis, como ‘xarope de glicose’ ou ‘gordura vegetal hidrogenada’, é melhor evitar."
+                }
+            ]
+        },
+        {
+            "gestante": gestante,
+            "data": datetime(2025, 5, 22, 10, 15),
+            "tipo": "dica",
+            "conteudo": """Inclua sempre uma pergunta no final das mensagens, como "O que achou da dica?", para estimular a interação. Isso cria confiança e ajuda a identificar necessidades específicas!
+
+    ✊ Você faz a diferença! Cada orientação simples pode transformar realidades. Vamos juntos?"""
+        }
+    ]
+
+
+    #for item in feed:
+     #   item["conteudo"] = markdown.markdown(item["conteudo"])
+
+
+    for item in feed:
+        item["conteudo"] = markdown.markdown(item["conteudo"])
+        
+        if item["tipo"] == "orientacao" and item.get("mensagens_whatsapp"):
+            mensagens_tratadas = []
+
+            for msg in item["mensagens_whatsapp"]:
+                # Substitui [Nome] no conteúdo
+                conteudo = msg["conteudo"].replace("[Nome]", gestante.nome)
+                mensagens_tratadas.append({
+                    "titulo": msg["titulo"],
+                    "conteudo": conteudo
+                })
+
+            item["mensagens_whatsapp"] = mensagens_tratadas
+
+            # Define mensagem padrão aleatória
+            mensagem_random = random.choice(mensagens_tratadas)
+            item["mensagem_padrao"] = mensagem_random["conteudo"]
+
+
+    return render(request, 'gestantes/feed.html', {
+        'gestante': gestante,
+        'feed': feed
+    })

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <!-- Cabeçalho -->
+    <div class="d-flex align-items-center mb-4">
+        <img src="{% if gestante.foto %}{{ gestante.foto.url }}{% else %}{% static 'assets/imagens/gestante/silhueta.png' %}{% endif %}"
+             class="rounded-circle me-3"
+             width="60" height="60"
+             alt="Foto da gestante">
+        <div>
+            <h5 class="mb-0"><strong>{{ gestante.nome }}</strong></h5>
+            <small class="text-muted">Recomendações personalizadas para você</small>
+        </div>
+    </div>
+
+    <!-- Feed de recomendações -->
+    {% for item in feed %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">{{ item.tipo|title }}</h6>
+                <p class="card-text">{{ item.texto|linebreaks }}</p>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                <small class="text-muted">Enviado em {{ item.data|date:"d/m/Y" }}</small>
+                
+                {% if gestante.telefone %}
+                    {% with mensagem_padrao="Olá {{ gestante.nome }}, tudo bem? Aqui é o agente de saúde. Estou enviando uma orientação importante sobre sua gestação: {{ item.texto|truncatechars:100 }}" %}
+                        <a href="https://wa.me/55{{ gestante.telefone|default_if_none:''|cut:' '|cut:'-'|cut:'('|cut:')' }}?text={{ mensagem_padrao|urlencode }}"
+                           target="_blank"
+                           class="btn btn-outline-success btn-sm">
+                            <i class="fab fa-whatsapp"></i> Enviar
+                        </a>
+                    {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">
+            Nenhuma recomendação encontrada para esta gestante.
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
