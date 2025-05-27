@@ -18,7 +18,7 @@
                 <p>Obrigado por sua dedicação!</p>
             </div>
             <div class="modal-footer">
-                <a href="{% url 'lista_gestantes' %}" class="btn btn-primary">Fechar</a>
+                <a href="{% url 'index' %}" class="btn btn-primary">Fechar</a>
                 
             </div>
         </div>
@@ -34,7 +34,7 @@
         var closeButton = document.getElementById('closeModalButton');
         if (closeButton) {
             closeButton.addEventListener('click', function () {
-                window.location.href = "{% url 'lista_gestantes' %}";
+                window.location.href = "{% url 'index' %}";
             });
         }
     };
@@ -61,7 +61,7 @@
     <div class="col-md-6 col-lg-4 mb-4">
         <div class="card h-100 shadow-sm">
             {% if gestante.foto %}
-            <img src="{{ gestante.foto.url }}" class="card-img-top" alt="Foto de {{ gestante.nome }}" style="height: 250px; object-fit: cover;">
+            <img src="{{ gestante.foto.url }}" class="card-img-top" alt="Foto de {{ gestante.nome }}" style="height: 380px; object-fit: cover;">
             {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ gestante.nome }}</h5>
