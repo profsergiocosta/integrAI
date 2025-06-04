@@ -1,0 +1,16 @@
+# Ignore arquivos de configuração e dependências que podem interferir na detecção
+requirements*.txt linguist-documentation
+*.md linguist-documentation
+*.yml linguist-documentation
+*.yaml linguist-documentation
+*.json linguist-generated
+*.lock linguist-generated
+
+# Ignore arquivos de front-end, se houver (opcional)
+static/** linguist-vendored
+assets/** linguist-vendored
+node_modules/** linguist-vendored
+
+# Forçar que arquivos principais sejam identificados como Python (opcional, se necessário)
+manage.py linguist-language=Python
+*/migrations/*.py linguist-language=Python
